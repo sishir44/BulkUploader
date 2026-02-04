@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Upload RQ Data";
+}
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.js"></script>
+@*
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+
+            body {
+                background: url("../../Img/deactivated.png") no-repeat center center fixed;
+                background-size: cover;
+            }
+
+
+        </style>
+    </head>
+    <body>
+
+
+        <h2 style="
+        color: #2076c2;
+    ">
+            Team: Please Note you can upload only Goals
+        </h2>
+
+    </body>
+    </html>
+*@
+
+@using (Html.BeginForm("GPUploaderABO", "Home", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+{
+    <label for="file">Upload ABO VRR And ABO PDR</label>
+    <br>
+    <br>
+    <span>Upload ABO VRR<input type="file" name="file" id="file" /></span>
+    <br>
+    <br>
+    <span>Upload ABO PDR<input type="file" name="file1" id="file1" /></span>
+    <br>
+    <br>
+    <input id="load" name="btnload" type="submit" value="Upload" />
+    <div id="div_1" style="display:none"><img src="~/Img/Spinner2.gif" /></div>
+
+    <p>
+        Response: @Html.Raw(@ViewBag.Message)
+    </p>
+    if (ViewBag.Message == "GP Status Successfully Generated")
+    {
+        <body onload="En()">
+        </body>
+    }
+}
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#load').click(function () {
+            $(this).attr('disabled', true, "cursor", "not-allowed");
+            this.form.submit();
+
+        });
+        $('#load1').attr('disabled', true);
+    });
+
+    $(function () {
+        $('#load').click(function () {
+            // $('#div_1').html('<img src="~/Img/Spinner.gif" style="width:20%, height:20%"/>');
+            $('#div_1').css('display', 'block');
+        })
+        $('#load').click(function () {
+            // $('#div_1').html('<img src="~/Img/Spinner.gif" style="width:20%, height:20%"/>');
+            $('#div_1').css('display', 'block');
+        })
+    })
+    $('#form').one('submit', function () {
+        $(this).find('input[type="submit"]').attr('disabled', 'disabled');
+    });
+    function En() {
+        $('#load1').attr('disabled', false);
+    }
+    function sendemail() {
+        window.location = 'Home/SendEmail';
+        $('#load1').attr('disabled', true);
+    }
+
+</script>

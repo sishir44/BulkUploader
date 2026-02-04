@@ -1,0 +1,225 @@
+@{
+    ViewBag.Title = "Excel Upload";
+}
+@{
+    ViewBag.DisableBulkyLink = true;
+}
+<meta charset="utf-8" />
+
+<style>
+    body {
+        background: linear-gradient(135deg, #eef2f7, #dfe9f3);
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .upload-wrapper {
+        width: 700px;
+        margin: 20px auto;
+        padding: 20px 30px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+
+    .upload-title {
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: 700;
+        color: #2d89ef;
+        letter-spacing: 0.5px;
+    }
+
+    .file-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 20px;
+    }
+
+    .file-row {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .file-row label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .file-row input[type=file] {
+            padding: 6px;
+            border: 1px dashed #b6c3d1;
+            border-radius: 6px;
+            background: #f8fbff;
+            cursor: pointer;
+        }
+
+            .file-row input[type=file].invalid {
+                border-color: #e74c3c;
+                background: #fff3f3;
+            }
+
+    .error-text {
+        font-size: 12px;
+        color: #e74c3c;
+        display: none;
+    }
+
+    .upload-btn {
+        width: 20%;
+        margin-top: 20px;
+        padding: 12px;
+        background: linear-gradient(135deg, #2d89ef, #1b5fa7);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-left: 35%;
+    }
+
+        .upload-btn:disabled {
+            background: #b0c4de;
+            cursor: not-allowed;
+        }
+
+    .success-msg {
+        margin-top: 15px;
+        text-align: center;
+        font-weight: 600;
+        color: green;
+    }
+
+    .hint {
+        text-align: center;
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 12px;
+    }
+
+ /*   .upload-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }*/
+</style>
+
+<div class="upload-wrapper">
+
+    <h2 class="upload-title">&#128202; Excel Bulk Upload</h2>
+    <div class="hint">Only <strong>.xls</strong> and <strong>.xlsx</strong> files are allowed</div>
+
+    @using (Html.BeginForm("UploadExcel", "BulkUploader",
+            FormMethod.Post,
+            new { enctype = "multipart/form-data", id = "excelForm" }))
+    {
+        <div class="file-grid">
+
+            <div class="file-row">
+                <label>Temp Location</label>
+                <input type="file" name="Temp_Location" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Sales File</label>
+                <input type="file" name="SalesTable" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Commission File</label>
+                <input type="file" name="CommissionTable" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Store File</label>
+                <input type="file" name="StoreTable" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>File 5</label>
+                <input type="file" name="Table5" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>File 6</label>
+                <input type="file" name="Table6" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>File 7</label>
+                <input type="file" name="Table7" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>File 8</label>
+                <input type="file" name="Table8" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>File 9</label>
+                <input type="file" name="Table9" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>File 10</label>
+                <input type="file" name="Table10" accept=".xls,.xlsx" />
+            </div>
+
+        </div>
+
+        <button type="submit" class="upload-btn" disabled>Upload Files</button>
+    }
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="success-msg">@ViewBag.Message</div>
+    }
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const btn = document.getElementById("uploadBtn");
+        const inputs = document.querySelectorAll('input[type="file"]');
+        const ok = ["xls", "xlsx"];
+
+        btn.disabled = true;
+
+        inputs.forEach(i => {
+            i.addEventListener("change", () => {
+
+                let valid = false;
+
+                inputs.forEach(f => {
+                    if (f.files.length) {
+                        const ext = f.files[0].name.split('.').pop().toLowerCase();
+
+                        if (!ok.includes(ext)) {
+                            alert("Only .xls and .xlsx files allowed!");
+                            f.value = "";
+                        } else {
+                            valid = true;
+                        }
+                    }
+                });
+
+                btn.disabled = !valid;
+            });
+        });
+
+    });
+</script>
+
+
+
+<script>
+    document.addEventListener("keydown", function (e) {
+        if (e.ctrlKey && e.key === "5") {
+            e.preventDefault();
+            window.location.href = window.location.pathname + "?v=" + Date.now();
+        }
+    });
+</script>

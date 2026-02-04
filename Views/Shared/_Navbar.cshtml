@@ -1,0 +1,77 @@
+<style>
+    /* ===== Sticky Navbar ===== */
+    .top-navbar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        height: 60px;
+        background: #1e293b; /* dark blue */
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+        /* Brand */
+        .top-navbar .brand {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Links */
+        .top-navbar a {
+            color: #e5e7eb;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+        }
+
+            .top-navbar a:hover {
+                color: #38bdf8;
+            }
+
+            .top-navbar a.active {
+                border-bottom: 2px solid #38bdf8;
+                padding-bottom: 4px;
+            }
+
+    /* Push content below navbar */
+    .wrapper {
+        margin-top: 20px;
+    }
+</style>
+
+
+<nav class="top-navbar">
+    <div class="nav-left">
+        <span class="brand">Uploader</span>
+    </div>
+    <a href="@Url.Action("Index","Home")">PnlStatement</a>
+    @*<a href="@Url.Action("GPUploaderABO","Home")">GPUploaderABO</a>*@
+    <a href="@Url.Action("PerformanceEvlUploader","Home")">PerformanceEvl</a>
+    <a href="@Url.Action("Inventoryuploader","Home")">Inventory</a>
+    <a href="@Url.Action("PerformanceEvlSepUploader","Home")">PerformanceElvMissing</a>
+    <a href="@Url.Action("GPUploader","GPReportUploader")">GPUploader</a>
+
+
+    <div class="nav-right">
+        @*<a href="@Url.Action("Index","GPReportUploader")" class="active">Upload</a>*@
+        <a href="@Url.Action("Logout","Login")">Logout</a>
+    </div>
+</nav>
+
+
+<script>
+$(function () {
+    @*@if (TempData["Success"] != null)
+    {
+        <text>toastr.success('@TempData["Success"]');</text>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <text>toastr.error('@TempData["Error"]');</text>
+    }*@
+});
+</script>

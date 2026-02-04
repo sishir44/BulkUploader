@@ -1,0 +1,183 @@
+﻿@{
+    ViewBag.Title = "GP Report Uploader Data";
+    Layout = null;
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #eaf6f6, #fdfbfb);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .wrapper {
+            height: 100%;
+            display: flex;
+            /*justify-content: center;
+            align-items: center;*/
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            margin-left: 30%;
+        }
+
+        h2 {
+            color: #2076c2;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        input[type="file"] {
+            display: block;
+            margin: 10px auto 20px auto;
+        }
+
+        input[type="submit"] {
+            background-color: #2076c2;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+            input[type="submit"]:disabled {
+                background-color: #cccccc;
+                cursor: not-allowed;
+            }
+
+        #div_1 {
+            margin-top: 20px;
+            display: none;
+        }
+
+            #div_1 img {
+                width: 40px;
+                height: 40px;
+            }
+
+        .response {
+            margin-top: 15px;
+            /*color: green;*/
+            font-weight: bold;
+        }
+
+        .preview-img {
+            margin-top: 25px;
+            width: 100%;
+            height: 450px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        @@media (max-height: 600px) {
+            .wrapper {
+                justify-content: flex-start;
+                padding-top: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    @Html.Partial("_Navbar")
+    <div class="wrapper">
+        <div class="container">
+            <h2>Upload GP Report Data</h2>
+
+            @using (Html.BeginForm("GPUploader", "GPReportUploader", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+            {
+                <label for="file">Select GP Report Excel File</label>
+                <input type="file" name="file" id="file" />
+
+                <input id="load" name="btnload" type="submit" value="Upload" disabled />
+
+                <div id="div_1">
+                    <img src="~/wwwroot/Spinner.gif" alt="Uploading..." />
+                </div>
+
+                <p class="response" style="color:@ViewBag.Style; font-weight:bold;">
+                    @ViewBag.Message
+                </p>
+            }
+        </div>
+
+        <img src="~/wwwroot/GPReport.png" alt="Sample Screenshot" class="preview-img" />
+    </div>
+
+
+    
+    <script>
+        $(function () {
+            $('#form').on('submit', function () {
+                $('#load').attr('disabled', true);
+                $('#div_1').show();
+            });
+        });
+
+        function En() {
+            alert("Upload Complete");
+        }
+
+        function sendemail() {
+            window.location = 'Home/SendEmail';
+            $('#load1').attr('disabled', true);
+        }
+    </script>
+
+
+    <script>
+        document.getElementById('file').addEventListener('change', function () {
+            var fileInput = this;
+            var filePath = fileInput.value;
+            var allowedExtensions = /(\.xls|\.xlsx)$/i;
+
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Please upload only Excel files (.xls or .xlsx).');
+                fileInput.value = ''; // Clear the input
+                return false;
+            }
+            $('#load').attr('disabled', false);
+        });
+
+        // Optional: Show spinner after validation
+        document.getElementById('form').addEventListener('submit', function (e) {
+            var fileInput = document.getElementById('file');
+            if (!fileInput.value) {
+                alert("Please select an Excel file before submitting.");
+                e.preventDefault();
+                document.getElementById('file').style.display = 'none';
+                return false;
+            } else {
+                document.getElementById('div_1').style.display = 'none';
+
+            }
+        });
+    </script>
+</body>
+</html>
