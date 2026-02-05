@@ -61,6 +61,36 @@ namespace BulkUploader.DAL
             }
         }
 
+        public string BulkInsert(DataTable dt, string tableName)
+        {
+            try
+            {
+                string conStr = ConfigurationManager.ConnectionStrings["APIConnStr"].ConnectionString;
+
+                using (SqlConnection con = new SqlConnection(conStr))
+                {
+                    con.Open();
+                    // 🔹 Step 1: Delete old records
+                    using (SqlCommand cmd = new SqlCommand($"DELETE FROM [{tableName}]", con))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    // 🔹 Step 2: Bulk insert new records
+                    using (SqlBulkCopy bulk = new SqlBulkCopy(con))
+                    {
+                        bulk.DestinationTableName = tableName;
+                        bulk.WriteToServer(dt);
+                    }
+                }
+                return "1";
+            }
+            catch (Exception ex)
+            {
+                //return "Error has occured :  " + ex.Message;
+                return "0";
+            }
+        }
+
         public DataTable GetQryData(string sqlquery)
         {
 
