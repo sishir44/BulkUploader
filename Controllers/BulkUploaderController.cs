@@ -16,6 +16,7 @@ namespace BulkUploader.Controllers
     public class BulkUploaderController : Controller
     {
         [HttpGet]
+        [ValidateInput(false)]
         public ActionResult UploadExcel()
         {
             return View();
@@ -34,7 +35,7 @@ namespace BulkUploader.Controllers
             HttpPostedFileBase MTDLocation3,
             HttpPostedFileBase MTDLocation4,
             HttpPostedFileBase LeadsCalled,
-            HttpPostedFileBase MAPARHistoricalAnalysis,
+            HttpPostedFileBase EmployeeRepData,
             HttpPostedFileBase Marketing,
             HttpPostedFileBase RequisitionsTable,
             HttpPostedFileBase Wiredraw,
@@ -59,7 +60,7 @@ namespace BulkUploader.Controllers
                     { "MTDLocation3", (MTDLocation3,"Temp_Daily_MTD_MTDLocation3") },
                     { "MTDLocation4", (MTDLocation4,"Temp_Daily_MTD_MTDLocation4") },
                     { "LeadsCalled", (LeadsCalled, "Temp_Daily_others_Leadscalled") },
-                    { "MAPARHistoricalAnalysis", (MAPARHistoricalAnalysis, "Temp_Daily_MTD_MAPARHistoricalAnalysis") },
+                    { "EmployeeRepData", (EmployeeRepData, "Temp_Daily_MTD_Repdata") },
                     { "Marketing", (Marketing, "Temp_Daily_others_Marketing") },
                     { "RequisitionsTable", (RequisitionsTable, "Temp_Daily_others_Requisitions") },
                     { "Wiredraw", (Wiredraw, "Temp_Daily_others_Wiredraw") },
