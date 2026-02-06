@@ -87,7 +87,7 @@ namespace BulkUploader.Controllers
                         res = UploadToTable(file, item.Value.Table);
                         if(res == "0")
                         {
-                            ViewBag.Warning = "Data is not uploaded on temp table";
+                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
                             continue;
                         }
                         uploadedFiles.Add(item.Key);
@@ -100,23 +100,24 @@ namespace BulkUploader.Controllers
 
                 if (uploadedFiles.Any() && res != "" && res != null)
                 {
-                    ViewBag.Success = "Data Uploaded to temp table";
+                    ViewBag.Success = "Data Uploaded to temp table: " + string.Join(", ", uploadedFiles);
                 } 
 
                 if (missingFiles.Any())
-                    ViewBag.Warning = "Not Selected: " + string.Join(", ", missingFiles);
+                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
 
-                //if(res == "1")
-                //{
-                //    status = DataStringGp.UploaderUpdateSTP(date);
-                //    if(status == "1")
-                //    {
-                //        ViewBag.Success = "Uploaded Successfully: " + string.Join(", ", uploadedFiles);
-                //    } else
-                //    {
-                //        ViewBag.Warning = " Not Uploaded Successfully";
-                //    }
-                //}
+                if (res == "1")
+                {
+                    status = DataStringGp.UploaderUpdateSTP(date);
+                    if (status == "1")
+                    {
+                        ViewBag.Success = "Uploaded Successfully!";
+                    }
+                    else
+                    {
+                        ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                    }
+                }
 
                 return View("UploadExcel");
 

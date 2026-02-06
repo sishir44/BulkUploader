@@ -19,6 +19,7 @@
         background: #ffffff;
         border-radius: 14px;
         box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        margin-top: 50px;
     }
 
     .upload-title {
@@ -67,7 +68,7 @@
     }
 
     .upload-btn {
-        width: 20%;
+        width: 15%;
         margin-top: 15px;
         padding: 12px;
         background: linear-gradient(135deg, #2d89ef, #1b5fa7);
@@ -94,6 +95,11 @@
         font-size: 13px;
         color: #666;
         margin-bottom: 12px;
+    }
+
+    .upload-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 </style>
 
@@ -155,10 +161,10 @@
         transition: 0.25s ease;
     }
 
-    /* hover effect */
-    .date-wrapper:hover {
-        box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-    }
+        /* hover effect */
+        .date-wrapper:hover {
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
 
     /* icon */
     .date-icon {
@@ -193,7 +199,8 @@
         <div class="upload-header">
             <h2 class="upload-title">&#128202; Excel Bulk Uploader</h2>
             <div class="date-wrapper">
-                <input type="date" class="date-picker" id="date" name="date" />
+                @*<input type="date" class="date-picker" id="date" name="date" />*@
+                <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
             </div>
         </div>
 
@@ -251,7 +258,7 @@
             </div>
 
             <div class="file-row">
-                <label>Leads Called 02.03</label>
+                <label>Leads Called </label>
                 <input type="file" name="LeadsCalled" accept=".xls,.xlsx" />
             </div>
 
@@ -261,7 +268,7 @@
             </div>
 
             <div class="file-row">
-                <label>Marketing 02.03</label>
+                <label>Marketing </label>
                 <input type="file" name="Marketing" accept=".xls,.xlsx" />
             </div>
 
@@ -270,15 +277,15 @@
                 <input type="file" name="RequisitionsTable" accept=".xls,.xlsx" />
             </div>
 
-            <div class="file-row">
-                <label>Wiredraw 02.03</label>
-                <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
-            </div>
+            @*<div class="file-row">
+                    <label>Wiredraw </label>
+                    <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
+                </div>
 
-            <div class="file-row">
-                <label>Wirelessraw 02.03</label>
-                <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
-            </div>
+                <div class="file-row">
+                    <label>Wirelessraw </label>
+                    <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
+                </div>*@
 
             <div class="file-row">
                 <label>Employee Detail for Time</label>
@@ -297,22 +304,22 @@
 
         </div>
 
-        <button type="submit" class="upload-btn">Upload Files</button>
+        <button type="submit" class="upload-btn" id="uploadBtn" disabled>Upload Files</button>
     }
 
     @if (ViewBag.Message != null)
     {
-        <div class="success-msg">@ViewBag.Message</div>
+        <div class="success-msg" style="white-space: pre-line">@ViewBag.Message</div>
     }
 
     @if (ViewBag.Success != null)
     {
-        <div class="alert alert-success">@ViewBag.Success</div>
+        <div class="alert alert-success" style="white-space: pre-line">@ViewBag.Success</div>
     }
 
     @if (ViewBag.Warning != null)
     {
-        <div class="alert alert-warning">@ViewBag.Warning</div>
+        <div class="alert alert-warning" style="white-space: pre-line">@ViewBag.Warning</div>
     }
 </div>
 
@@ -322,31 +329,21 @@
     </div>*@
 
 
-@*<script>
-    document.addEventListener("DOMContentLoaded", function () {
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
 
-        const uploadBtn = document.getElementById("uploadBtn");
-        if (!uploadBtn) return;
+        const uploadBtn = document.getElementById('uploadBtn');
+        const fileInputs = document.querySelectorAll('.file-grid input[type="file"]');
 
-        const fileInputs = document.querySelectorAll('input[type="file"]');
+        function toggleUpload() {
+            uploadBtn.disabled = !Array.from(fileInputs).some(f => f.files.length > 0);
+        }
 
-        uploadBtn.disabled = true;
-
-        fileInputs.forEach(input => {
-            input.addEventListener("change", function () {
-
-                let hasFile = false;
-
-                fileInputs.forEach(f => {
-                    if (f.files.length > 0) hasFile = true;
-                });
-
-                uploadBtn.disabled = !hasFile;
-            });
-        });
+        fileInputs.forEach(input => input.addEventListener('change', toggleUpload));
 
     });
-    </script>*@
+</script>
+
 
 
 <script>
@@ -374,6 +371,24 @@
             e.preventDefault();
             window.location.href = window.location.pathname + "?v=" + Date.now();
         }
+    });
+</script>
+
+<script>
+    document.addEventListener('keydown', function (e) {
+
+        // F5
+        if (e.key === 'F5') {
+            e.preventDefault();
+            location.reload(true);
+        }
+
+        // Ctrl + F5
+        if (e.ctrlKey && e.key === 'F5') {
+            e.preventDefault();
+            location.reload(true);
+        }
+
     });
 </script>
 
