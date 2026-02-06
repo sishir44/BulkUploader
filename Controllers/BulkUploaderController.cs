@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using DevExpress.Data.Utils;
 using DevExpress.XtraReports.UI;
 using BulkUploader.DAL;
+using BulkUploader.Models;
 
 namespace BulkUploader.Controllers
 {
@@ -42,7 +43,8 @@ namespace BulkUploader.Controllers
             HttpPostedFileBase Wirelessraw,
             HttpPostedFileBase EmployeeDetailforTime,
             HttpPostedFileBase ATTUIDDetailsMIS,
-            HttpPostedFileBase TATotalHoursSummary
+            HttpPostedFileBase TATotalHoursSummary,
+            string date
             )
         {
             try
@@ -75,6 +77,7 @@ namespace BulkUploader.Controllers
                 var uploadedFiles = new List<string>();
                 var missingFiles = new List<string>();
                 string res = "";
+                string status = "";
                 foreach (var item in files)
                 {
                     var file = item.Value.File;
@@ -85,7 +88,7 @@ namespace BulkUploader.Controllers
                         if(res == "0")
                         {
                             ViewBag.Warning = "Data is not uploaded on temp table";
-                            return View("UploadExcel");
+                            continue;
                         }
                         uploadedFiles.Add(item.Key);
                     }
@@ -97,11 +100,23 @@ namespace BulkUploader.Controllers
 
                 if (uploadedFiles.Any() && res != "" && res != null)
                 {
-                    ViewBag.Success = "Uploaded Successfully: " + string.Join(", ", uploadedFiles);
+                    ViewBag.Success = "Data Uploaded to temp table";
                 } 
 
                 if (missingFiles.Any())
                     ViewBag.Warning = "Not Selected: " + string.Join(", ", missingFiles);
+
+                //if(res == "1")
+                //{
+                //    status = DataStringGp.UploaderUpdateSTP(date);
+                //    if(status == "1")
+                //    {
+                //        ViewBag.Success = "Uploaded Successfully: " + string.Join(", ", uploadedFiles);
+                //    } else
+                //    {
+                //        ViewBag.Warning = " Not Uploaded Successfully";
+                //    }
+                //}
 
                 return View("UploadExcel");
 

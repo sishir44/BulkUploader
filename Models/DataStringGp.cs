@@ -489,6 +489,29 @@ namespace BulkUploader.Models
             return dt;
         }
 
+        public static string UploaderUpdateSTP(string date)
+        {
+            try
+            {
+                string status = "";
+                //DateTime InputDate = DateTime.Now.Date;
+                //string formattedDate = InputDate.ToString("yyyy-MM-dd");
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "updateDaily_MTD";
+                DAL.SPParameters spParam = new DAL.SPParameters();
+                spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
+                status = objDal.AddData(spParam);
+                if(status == "Operation was successful")
+                {
+                    status = "1";
+                }
+                return status;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
 
         public static string InsertGPStatus()
@@ -530,6 +553,9 @@ namespace BulkUploader.Models
             }
 
         }
+
+
+
         public static DataTable GetTableColumnName(string table)
         {
             try

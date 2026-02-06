@@ -108,7 +108,7 @@
         display: flex;
         justify-content: center !important;
         align-items: center !important;
-        vertical-align:middle !important;
+        vertical-align: middle !important;
         flex-direction: column;
         z-index: 9999;
     }
@@ -120,8 +120,8 @@
         border-top: 6px solid #007bff;
         border-radius: 50%;
         animation: spin 1s linear infinite;
-        vertical-align:central !important;
-        text-align:center !important;
+        vertical-align: central !important;
+        text-align: center !important;
     }
 
     @@keyframes spin {
@@ -131,16 +131,78 @@
     }
 </style>
 
+<style>
+    .upload-header {
+        position: relative;
+        text-align: center;
+        margin-bottom: 12px;
+    }
+
+    /* ----- DATE BOX ----- */
+    .date-wrapper {
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #A4E1F5;
+        padding: 6px 12px;
+        border-radius: 10px;
+        border: 1px solid #dcdcdc;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: 0.25s ease;
+    }
+
+    /* hover effect */
+    .date-wrapper:hover {
+        box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    }
+
+    /* icon */
+    .date-icon {
+        font-size: 18px;
+    }
+
+    /* input style */
+    .date-picker {
+        border: none;
+        outline: none;
+        font-size: 14px;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    /* hint center */
+    .hint {
+        text-align: center;
+        color: #666;
+    }
+</style>
+
+
+
 
 <div class="upload-wrapper">
-
-    <h2 class="upload-title">&#128202; Excel Bulk Uploader</h2>
-    <div class="hint">Only <strong>.xls</strong> and <strong>.xlsx</strong> files are allowed</div>
-
     @using (Html.BeginForm("UploadExcel", "BulkUploader",
-            FormMethod.Post,
-            new { enctype = "multipart/form-data", id = "excelForm" }))
+        FormMethod.Post,
+        new { enctype = "multipart/form-data", id = "excelForm" }))
     {
+
+        <div class="upload-header">
+            <h2 class="upload-title">&#128202; Excel Bulk Uploader</h2>
+            <div class="date-wrapper">
+                <input type="date" class="date-picker" id="date" name="date" />
+            </div>
+        </div>
+
+        <div class="hint">
+            Only <strong>.xls</strong> and <strong>.xlsx</strong> files are allowed
+        </div>
+
+
+
         <div class="file-grid">
 
             <div class="file-row">
@@ -255,9 +317,9 @@
 </div>
 
 @*<div id="loader" style="display:block;">
-    <div class="spinner"></div>
-    <p>Uploading files... Please wait</p>
-</div>*@
+        <div class="spinner"></div>
+        <p>Uploading files... Please wait</p>
+    </div>*@
 
 
 @*<script>
