@@ -240,6 +240,78 @@ namespace BulkUploader.Models
             }
         }
 
+        public static string BulkOperationDB_HRReport(DataTable dt, string repTime, DataTable header)
+        {
+            try
+            {
+                if (dt.Rows.Count == 0) return "No data to upload";
+
+                VrrModel.DeleteVrrPdr(dt.TableName);
+
+                // Add RepTime column if not exists
+                if (!dt.Columns.Contains("RepTime"))
+                {
+                    DataColumn repTimeCol = new DataColumn("RepTime", typeof(string));
+                    repTimeCol.DefaultValue = repTime;
+                    dt.Columns.Add(repTimeCol);
+                }
+
+                // Ensure header includes RepTime
+                if (!header.Rows.Cast<DataRow>().Any(r => r["COLUMN_NAME"].ToString() == "RepTime"))
+                {
+                    header.Rows.Add("RepTime");
+                }
+
+                var skipCols = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "RepTime" };
+
+                foreach (var col in dt.Columns.Cast<DataColumn>().Where(c => c.DataType == typeof(string) && !skipCols.Contains(c.ColumnName)).ToList())
+                {
+                    // Check if column is mostly numeric (allow $, %, ,)
+                    bool isNumeric = dt.AsEnumerable().All(row =>
+                    {
+                        string val = row[col.ColumnName]?.ToString().Replace("%", "").Replace("$", "").Replace(",", "").Trim();
+                        return string.IsNullOrWhiteSpace(val) || float.TryParse(val, out _);
+                    });
+
+                    if (isNumeric)
+                    {
+                        string floatColName = col.ColumnName + "_float";
+                        DataColumn floatCol = new DataColumn(floatColName, typeof(float));
+                        dt.Columns.Add(floatCol);
+
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            string valStr = row[col.ColumnName]?.ToString().Replace("%", "").Replace("$", "").Replace(",", "").Trim();
+                            row[floatCol] = float.TryParse(valStr, out float f) ? f : 0f;
+                        }
+
+                        dt.Columns.Remove(col.ColumnName);
+                        floatCol.ColumnName = col.ColumnName;
+                    }
+                }
+
+                string connStr = ConfigurationManager.ConnectionStrings["APIConnStr"].ToString();
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connStr, SqlBulkCopyOptions.FireTriggers))
+                {
+                    bulkCopy.DestinationTableName = dt.TableName;
+                    bulkCopy.BulkCopyTimeout = 6000;
+
+                    foreach (DataRow row in header.Rows)
+                    {
+                        string colName = row["COLUMN_NAME"].ToString();
+                        if (dt.Columns.Contains(colName))
+                            bulkCopy.ColumnMappings.Add(colName, colName);
+                    }
+                    bulkCopy.WriteToServer(dt);
+                }
+                return "Data has been Uploaded Successfully";
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static string BulkOperationDB_PerformanceEvlSepReport(DataTable dt, string repTime, DataTable header)
         {
             try
@@ -431,6 +503,28 @@ namespace BulkUploader.Models
                 string Evl = "";
                 DAL.DAL objDal = new DAL.DAL();
                 objDal.ProcName = "updatefct_my_Inventorydata";
+                DAL.SPParameters spParam = new DAL.SPParameters();
+                //spParam.SetParam("@Year", SqlDbType.VarChar, Year);
+                //spParam.SetParam("@UserID", SqlDbType.VarChar, UserId);
+                //spParam.SetParam("@month", SqlDbType.VarChar, Month);
+                //spParam.SetParam("@EmpId", SqlDbType.VarChar, EmpID);
+                Evl = objDal.AddData(spParam);
+
+                return Evl;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static string InsertHRStatus(string UserId, string EmpID, string Month, string Year)
+        {
+            try
+            {
+                string Evl = "";
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "updatefct_my_HRColumns";
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 //spParam.SetParam("@Year", SqlDbType.VarChar, Year);
                 //spParam.SetParam("@UserID", SqlDbType.VarChar, UserId);

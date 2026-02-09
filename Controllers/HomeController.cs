@@ -53,13 +53,202 @@ namespace BulkUploader.Controllers
                 return View();
             }
         }
-                                                                                                                                     
+        
+        public ActionResult GPUploaderABO()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult GPUploaderABO(HttpPostedFileBase file, HttpPostedFileBase file1)
+        {
+            try
+            {
+                string res = "Please Upload Both ABO Files,PDR And VRR";
+                if (file != null && file1 != null)
+                {
+                    SaveFiles(file, "GPUploaderABO");
+                    res = UploadFile(file, null, null, null, null);
+                }
+                ViewBag.Message = res;
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = "File not Uploaded!";
+                ViewBag.Style = "red";
+                return View();
+            }
+        }
+
+        public ActionResult PerformanceEvlUploader()
+        {
+            global.userID = Request.QueryString["userid"];
+            global.decrpedUserId = EncryptionHelper.Decrypt(global.userID);
+            DataTable dt = DataStringGp.GetEmpIDList();
+            ViewBag.EmpIDList = dt;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult PerformanceEvlUploader(PerformanceEvlUploadVM model )
+        {
+            ViewBag.EmpIDList = DataStringGp.GetEmpIDList();
+            model.EmpID = model.EmpID == "All" ? null : model.EmpID;
+            model.Month = model.Month == "All" ? null : model.Month;
+
+            try
+            {
+                string res = "Please Upload PerformanceEvl file";
+                //if (file.FileName != null)
+                //{
+                //    SaveFiles(file, "PerformanceEvl");
+                //    res = UploadFile(file, UploadDate);
+                //}
+                if (model.File.FileName != null)
+                {
+                    SaveFiles(model.File, "PerformanceEvl");
+                    res = UploadFile(model.File, global.decrpedUserId, model.EmpID, model.Month, model.Year);
+                }
+                //ViewBag.Message = res;
+                //ViewBag.Style = "green";
+                int result = Convert.ToInt32(res);
+                ViewBag.Style = result > 0 ? "green" : "red";
+                ViewBag.Message = result > 0 ? "File uploaded successfully" : "File not Uploaded";
+
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = "File not Uploaded!";
+                ViewBag.Style = "red";
+                return View();
+            }
+        }
+        
+        public ActionResult PerformanceEvlSepUploader()
+        {
+            global.userID = Request.QueryString["userid"];
+            global.decrpedUserId = EncryptionHelper.Decrypt(global.userID);
+            DataTable dt = DataStringGp.GetEmpIDList();
+            ViewBag.EmpIDList = dt;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult PerformanceEvlSepUploader(PerformanceEvlUploadVM model)
+        {
+            ViewBag.EmpIDList = DataStringGp.GetEmpIDList();
+            model.EmpID = model.EmpID == "All" ? null : model.EmpID;
+            model.Month = model.Month == "All" ? null : model.Month;
+
+            try
+            {
+                string res = "Please Upload PerformanceEvl file";
+                //if (file.FileName != null)
+                //{
+                //    SaveFiles(file, "PerformanceEvl");
+                //    res = UploadFile(file, UploadDate);
+                //}
+                if (model.File.FileName != null)
+                {
+                    SaveFiles(model.File, "PerformanceEvl");
+                    res = UploadFile(model.File, global.decrpedUserId, model.EmpID, model.Month, model.Year);
+                }
+                //ViewBag.Message = res;
+                //ViewBag.Style = "green";
+                int result = Convert.ToInt32(res);
+                ViewBag.Style = result > 0 ? "green" : "red";
+                ViewBag.Message = result > 0 ? "File uploaded successfully" : "File not Uploaded";
+
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = "File not Uploaded!";
+                ViewBag.Style = "red";
+                return View();
+            }
+        }
+        
+        public ActionResult Inventoryuploader()
+        {
+            global.userID = Request.QueryString["userid"];
+            global.decrpedUserId = EncryptionHelper.Decrypt(global.userID);
+            DataTable dt = DataStringGp.GetEmpIDList();
+            ViewBag.EmpIDList = dt;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Inventoryuploader(InventoryModel model)
+        {
+            ViewBag.EmpIDList = DataStringGp.GetEmpIDList();
+            model.EmpID = model.EmpID == "All" ? null : model.EmpID;
+            model.Month = model.Month == "All" ? null : model.Month;
+
+            try
+            {
+                string res = "Please Upload Inventory file";
+                if (model.File.FileName != null)
+                {
+                    SaveFiles(model.File, "Inventory");
+                    res = UploadFile(model.File, global.decrpedUserId, model.EmpID, model.Month, model.Year);
+                }
+                int result = Convert.ToInt32(res);
+                ViewBag.Style = result > 0 ? "green" : "red";
+                ViewBag.Message = result > 0 ? "File uploaded successfully" : "File not Uploaded";
+
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = "File not Uploaded!";
+                ViewBag.Style = "red";
+                return View();
+            }
+        }
+
+        public ActionResult USHRUploader()
+        {
+            global.userID = Request.QueryString["userid"];
+            global.decrpedUserId = EncryptionHelper.Decrypt(global.userID);
+            DataTable dt = DataStringGp.GetEmpIDList();
+            ViewBag.EmpIDList = dt;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult USHRUploader(USHRModel model)
+        {
+            try
+            {
+                string res = "Please Upload HR file";
+                if (model.File.FileName != null)
+                {
+                    SaveFiles(model.File, "PEDataUSHR");
+                    res = UploadFile(model.File, global.decrpedUserId, null,null,null);
+                }
+                int result = Convert.ToInt32(res);
+                ViewBag.Style = result > 0 ? "green" : "red";
+                ViewBag.Message = result > 0 ? "File uploaded successfully" : "File not Uploaded";
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = "File not Uploaded!";
+                ViewBag.Style = "red";
+                return View();
+            }
+        }
+
+
+        //Excel Save file: Begin
         public void SaveFiles(HttpPostedFileBase file, string ReportName)
         {
-                                
-            try                                                      
+
+            try
             {
-                List<HttpPostedFileBase> FileEnum = new List<HttpPostedFileBase> { file};
+                List<HttpPostedFileBase> FileEnum = new List<HttpPostedFileBase> { file };
 
                 string date = DateTime.Now.ToString("yyyyMMdd");
                 string dateTime = DateTime.Now.ToString("yyyyMMdd_hhmmss");
@@ -72,7 +261,7 @@ namespace BulkUploader.Controllers
                         bool exists = Directory.Exists(root);
                         if (!exists)
                         {
-                            Directory.CreateDirectory(root);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+                            Directory.CreateDirectory(root);
                         }
 
                         var ReportRoot = Server.MapPath("~/UploadedFiles/" + date + "/" + ReportName);
@@ -103,6 +292,9 @@ namespace BulkUploader.Controllers
                 Common.recorderror("GP_ReportUploader/HomeController/SaveFiles", ex.Message, "", line);
             }
         }
+        //Excel Save file: End
+
+        //Excel Upload file: Begin
         public string UploadFile(HttpPostedFileBase file, string UserId, string EmpID, string Month, string Year)
         {
             string res = "";
@@ -149,7 +341,7 @@ namespace BulkUploader.Controllers
                             }
 
                             Header = DataStringGp.GetTableColumnNames(DataTbl.TableName);
-                            
+
                             foreach (DataRow row in Header.Rows)
                             {
                                 fixedColumns.Add(row["COLUMN_NAME"].ToString());
@@ -199,7 +391,8 @@ namespace BulkUploader.Controllers
                             }
                         }
                         //================== SEPARATER====================//
-                        else if (result == "Temp_PerformanceEvl") {
+                        else if (result == "Temp_PerformanceEvl")
+                        {
                             DataTbl = UploadExcel.GetDataTable(Obj);
                             DataTbl.TableName = result;
 
@@ -209,7 +402,7 @@ namespace BulkUploader.Controllers
                             }
 
                             Header = DataStringGp.GetTableColumnNames("Temp_PerformanceEvl");
-                            
+
                             foreach (DataRow row in Header.Rows)
                             {
                                 fixedColumns.Add(row["COLUMN_NAME"].ToString());
@@ -257,19 +450,20 @@ namespace BulkUploader.Controllers
                             {
                                 return "Error occur during Insertion of Temp_PerformanceEvl Data";
                             }
-                        } 
+                        }
                         //================== SEPARATER====================//
-                        else if (result == "temp_PerformEvlmissing") {
+                        else if (result == "temp_PerformEvlmissing")
+                        {
                             DataTbl = UploadExcel.GetDataTable(Obj);
                             DataTbl.TableName = result;
-                            
+
                             foreach (DataColumn col in DataTbl.Columns)
                             {
                                 ExcelColNameList.Add(col.ColumnName);
                             }
 
                             Header = DataStringGp.GetTableColumnNames("temp_PerformEvlmissing");
-                            
+
                             foreach (DataRow row in Header.Rows)
                             {
                                 fixedColumns.Add(row["COLUMN_NAME"].ToString());
@@ -380,6 +574,67 @@ namespace BulkUploader.Controllers
                             }
                         }
                         //================== SEPARATER====================//
+                        else if (result == "Temp_PEdata_HR")
+                        {
+                            DataTbl = UploadExcel.GetDataTable(Obj);
+                            DataTbl.TableName = result;
+
+                            foreach (DataColumn col in DataTbl.Columns)
+                            {
+                                ExcelColNameList.Add(col.ColumnName);
+                            }
+
+                            Header = DataStringGp.GetTableColumnNames("Temp_PEdata_HR");
+
+                            foreach (DataRow row in Header.Rows)
+                            {
+                                fixedColumns.Add(row["COLUMN_NAME"].ToString());
+                            }
+
+                            lstFieldsRequired = ExcelColNameList.Where(a => fixedColumns.Any(x => x.ToString().ToUpper() == a.ToString().ToUpper())).ToList();
+                            lstFieldsMissing = fixedColumns.Where(a => ExcelColNameList.All(x => x.ToString().ToUpper() != a.ToString().ToUpper())).ToList();
+
+                            if (lstFieldsMissing.Count > 0)
+                            {
+                                if (lstFieldsMissing.Count > 0)
+                                {
+                                    if (res != "")
+                                    {
+                                        res = res + "<br />and<br />";
+                                    }
+                                    res += "Following columns are missing in HR file:";
+                                    int a = 1;
+                                    foreach (string field in lstFieldsMissing)
+                                    {
+                                        res += "<br />" + a.ToString() + ") " + field;
+                                        a++;
+                                    }
+                                }
+                                if (res != "")
+                                {
+                                    return res;
+                                }
+                            }
+                            if (res != null)
+                            {
+                                res = DataStringGp.BulkOperationDB_HRReport(DataTbl, RepTime, Header);
+                            }
+                            else
+                            {
+                                return res;
+                            }
+                            if (res != null)
+                            {
+                                res = DataStringGp.InsertHRStatus(UserId, EmpID, Month, Year);
+                                //return DataTbl.Rows.Count.ToString();
+                                return res;
+                            }
+                            else
+                            {
+                                return "Error occur during Insertion of Temp_USHR Data";
+                            }
+                        }
+                        //================== SEPARATER====================//
                         else
                         {
                             return "Please upload the file!";
@@ -398,165 +653,6 @@ namespace BulkUploader.Controllers
             }
             return res;
         }
-
-
-        public ActionResult GPUploaderABO()
-        {
-            return View();
-        }
-        [HttpPost]
-        public ActionResult GPUploaderABO(HttpPostedFileBase file, HttpPostedFileBase file1)
-        {
-            try
-            {
-                string res = "Please Upload Both ABO Files,PDR And VRR";
-                if (file != null && file1 != null)
-                {
-                    SaveFiles(file, "GPUploaderABO");
-                    res = UploadFile(file, null, null, null, null);
-                }
-                ViewBag.Message = res;
-                return View();
-
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Message = "File not Uploaded!";
-                ViewBag.Style = "red";
-                return View();
-            }
-        }
-
-
-        public ActionResult PerformanceEvlUploader()
-        {
-            global.userID = Request.QueryString["userid"];
-            global.decrpedUserId = EncryptionHelper.Decrypt(global.userID);
-            DataTable dt = DataStringGp.GetEmpIDList();
-            ViewBag.EmpIDList = dt;
-            return View();
-        }
-        
-        [HttpPost]
-        public ActionResult PerformanceEvlUploader(PerformanceEvlUploadVM model )
-        {
-            ViewBag.EmpIDList = DataStringGp.GetEmpIDList();
-            model.EmpID = model.EmpID == "All" ? null : model.EmpID;
-            model.Month = model.Month == "All" ? null : model.Month;
-
-            try
-            {
-                string res = "Please Upload PerformanceEvl file";
-                //if (file.FileName != null)
-                //{
-                //    SaveFiles(file, "PerformanceEvl");
-                //    res = UploadFile(file, UploadDate);
-                //}
-                if (model.File.FileName != null)
-                {
-                    SaveFiles(model.File, "PerformanceEvl");
-                    res = UploadFile(model.File, global.decrpedUserId, model.EmpID, model.Month, model.Year);
-                }
-                //ViewBag.Message = res;
-                //ViewBag.Style = "green";
-                int result = Convert.ToInt32(res);
-                ViewBag.Style = result > 0 ? "green" : "red";
-                ViewBag.Message = result > 0 ? "File uploaded successfully" : "File not Uploaded";
-
-                return View();
-
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Message = "File not Uploaded!";
-                ViewBag.Style = "red";
-                return View();
-            }
-        }
-
-        public ActionResult PerformanceEvlSepUploader()
-        {
-            global.userID = Request.QueryString["userid"];
-            global.decrpedUserId = EncryptionHelper.Decrypt(global.userID);
-            DataTable dt = DataStringGp.GetEmpIDList();
-            ViewBag.EmpIDList = dt;
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult PerformanceEvlSepUploader(PerformanceEvlUploadVM model)
-        {
-            ViewBag.EmpIDList = DataStringGp.GetEmpIDList();
-            model.EmpID = model.EmpID == "All" ? null : model.EmpID;
-            model.Month = model.Month == "All" ? null : model.Month;
-
-            try
-            {
-                string res = "Please Upload PerformanceEvl file";
-                //if (file.FileName != null)
-                //{
-                //    SaveFiles(file, "PerformanceEvl");
-                //    res = UploadFile(file, UploadDate);
-                //}
-                if (model.File.FileName != null)
-                {
-                    SaveFiles(model.File, "PerformanceEvl");
-                    res = UploadFile(model.File, global.decrpedUserId, model.EmpID, model.Month, model.Year);
-                }
-                //ViewBag.Message = res;
-                //ViewBag.Style = "green";
-                int result = Convert.ToInt32(res);
-                ViewBag.Style = result > 0 ? "green" : "red";
-                ViewBag.Message = result > 0 ? "File uploaded successfully" : "File not Uploaded";
-
-                return View();
-
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Message = "File not Uploaded!";
-                ViewBag.Style = "red";
-                return View();
-            }
-        }
-
-        public ActionResult Inventoryuploader()
-        {
-            global.userID = Request.QueryString["userid"];
-            global.decrpedUserId = EncryptionHelper.Decrypt(global.userID);
-            DataTable dt = DataStringGp.GetEmpIDList();
-            ViewBag.EmpIDList = dt;
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Inventoryuploader(InventoryModel model)
-        {
-            ViewBag.EmpIDList = DataStringGp.GetEmpIDList();
-            model.EmpID = model.EmpID == "All" ? null : model.EmpID;
-            model.Month = model.Month == "All" ? null : model.Month;
-
-            try
-            {
-                string res = "Please Upload Inventory file";
-                if (model.File.FileName != null)
-                {
-                    SaveFiles(model.File, "Inventory");
-                    res = UploadFile(model.File, global.decrpedUserId, model.EmpID, model.Month, model.Year);
-                }
-                int result = Convert.ToInt32(res);
-                ViewBag.Style = result > 0 ? "green" : "red";
-                ViewBag.Message = result > 0 ? "File uploaded successfully" : "File not Uploaded";
-
-                return View();
-
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Message = "File not Uploaded!";
-                ViewBag.Style = "red";
-                return View();
-            }
-        }
+        //Excel Upload file: End
     }
 }

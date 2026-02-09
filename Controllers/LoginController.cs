@@ -25,11 +25,11 @@ public class LoginController : Controller
         {
             Session["Email"] = user.Email;
             Session["Password"] = user.PasswordHash;
+            TempData["LoginSts"] = 1;
 
             TempData["Success"] = "Login successful";
             return RedirectToAction("Index", "Home");
         }
-
         TempData["Error"] = "Invalid username or password";
         return View(model);
     }

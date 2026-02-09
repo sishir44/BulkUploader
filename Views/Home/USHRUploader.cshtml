@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Upload PnlStatement Data";
+    ViewBag.Title = "Upload USHR Data";
     Layout = null;
 }
 
@@ -121,11 +121,11 @@
 
     <div class="wrapper">
         <div class="container">
-            <h2>Upload PnlStatement Data</h2>
+            <h2>Upload HR Data</h2>
 
-            @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+            @using (Html.BeginForm("USHRUploader", "Home", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
             {
-                <label for="file">Select PnlStatement Excel File</label>
+                <label for="file">Select USHR Excel File</label>
                 <input type="file" name="file" id="file" />
 
                 <input id="load" name="btnload" type="submit" value="Upload" disabled />
@@ -140,7 +140,7 @@
             }
         </div>
 
-        <img src="~/wwwroot/PnlStatement.png" alt="Sample Screenshot" class="preview-img" />
+        <img src="~/wwwroot/HR.png" alt="Sample Screenshot" class="preview-img" />
     </div>
 
 

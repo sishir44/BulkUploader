@@ -189,6 +189,7 @@
 
 
 
+@*@Html.Partial("_Navbar")*@
 
 <div class="upload-wrapper">
     @using (Html.BeginForm("UploadExcel", "BulkUploader",
@@ -278,14 +279,14 @@
             </div>
 
             <div class="file-row">
-                    <label>Wiredraw </label>
-                    <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
-                </div>
+                <label>Wiredraw </label>
+                <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
+            </div>
 
-                <div class="file-row">
-                    <label>Wirelessraw </label>
-                    <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
-                </div>
+            <div class="file-row">
+                <label>Wirelessraw </label>
+                <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
+            </div>
 
             <div class="file-row">
                 <label>Employee Detail for Time</label>
