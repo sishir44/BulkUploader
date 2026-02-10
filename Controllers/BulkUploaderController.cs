@@ -85,9 +85,10 @@ namespace BulkUploader.Controllers
                     if (file != null && file.ContentLength > 0)
                     {
                         res = UploadToTable(file, item.Value.Table);
-                        if(res == "0")
+                        if(res != "1")
                         {
-                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
+                            //ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
+                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key +"\n" + res;
                             continue;
                         }
                         uploadedFiles.Add(item.Key);
@@ -206,8 +207,8 @@ namespace BulkUploader.Controllers
             }
             catch (Exception ex)
             {
-                //return "Error has occured :  " + ex.Message;
-                return "0";
+                return "Error has occured :  " + ex.Message;
+                //return "0";
             }
         }
     }
