@@ -598,8 +598,11 @@ namespace BulkUploader.Models
                 if(status == "Operation was successful")
                 {
                     status = "1";
+                } else
+                {
+                    status = status;
                 }
-                return status;
+                    return status;
             }
             catch (Exception ex)
             {

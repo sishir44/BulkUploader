@@ -115,7 +115,8 @@ namespace BulkUploader.Controllers
                     }
                     else
                     {
-                        ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                        ViewBag.Error =  status;
                     }
                 }
 
