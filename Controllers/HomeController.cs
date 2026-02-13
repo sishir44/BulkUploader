@@ -241,6 +241,44 @@ namespace BulkUploader.Controllers
             }
         }
 
+        public ActionResult KPIUploader()
+        {
+            global.userID = Request.QueryString["userid"];
+            global.decrpedUserId = EncryptionHelper.Decrypt(global.userID);
+            DataTable dt = DataStringGp.GetEmpIDList();
+            ViewBag.EmpIDList = dt;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult KPIUploader(InventoryModel model)
+        {
+            ViewBag.EmpIDList = DataStringGp.GetEmpIDList();
+            model.EmpID = model.EmpID == "All" ? null : model.EmpID;
+            model.Month = model.Month == "All" ? null : model.Month;
+
+            try
+            {
+                string res = "Please Upload Inventory file";
+                if (model.File.FileName != null)
+                {
+                    SaveFiles(model.File, "KPIUploader");
+                    res = UploadFile(model.File, global.decrpedUserId, model.EmpID, model.Month, model.Year);
+                }
+                int result = Convert.ToInt32(res);
+                ViewBag.Style = result > 0 ? "green" : "red";
+                ViewBag.Message = result > 0 ? "File uploaded successfully" : "File not Uploaded";
+
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = "File not Uploaded!";
+                ViewBag.Style = "red";
+                return View();
+            }
+        }
+
 
         //Excel Save file: Begin
         public void SaveFiles(HttpPostedFileBase file, string ReportName)
@@ -626,6 +664,67 @@ namespace BulkUploader.Controllers
                             if (res != null)
                             {
                                 res = DataStringGp.InsertHRStatus(UserId, EmpID, Month, Year);
+                                //return DataTbl.Rows.Count.ToString();
+                                return res;
+                            }
+                            else
+                            {
+                                return "Error occur during Insertion of Temp_USHR Data";
+                            }
+                        }
+                        //================== SEPARATER====================//
+                        else if (result == "Temp_Daily_MTD_kpi")
+                        {
+                            DataTbl = UploadExcel.GetDataTable(Obj);
+                            DataTbl.TableName = result;
+
+                            foreach (DataColumn col in DataTbl.Columns)
+                            {
+                                ExcelColNameList.Add(col.ColumnName);
+                            }
+
+                            Header = DataStringGp.GetTableColumnNames("Temp_Daily_MTD_kpi");
+
+                            foreach (DataRow row in Header.Rows)
+                            {
+                                fixedColumns.Add(row["COLUMN_NAME"].ToString());
+                            }
+
+                            lstFieldsRequired = ExcelColNameList.Where(a => fixedColumns.Any(x => x.ToString().ToUpper() == a.ToString().ToUpper())).ToList();
+                            lstFieldsMissing = fixedColumns.Where(a => ExcelColNameList.All(x => x.ToString().ToUpper() != a.ToString().ToUpper())).ToList();
+
+                            if (lstFieldsMissing.Count > 0)
+                            {
+                                if (lstFieldsMissing.Count > 0)
+                                {
+                                    if (res != "")
+                                    {
+                                        res = res + "<br />and<br />";
+                                    }
+                                    res += "Following columns are missing in HR file:";
+                                    int a = 1;
+                                    foreach (string field in lstFieldsMissing)
+                                    {
+                                        res += "<br />" + a.ToString() + ") " + field;
+                                        a++;
+                                    }
+                                }
+                                if (res != "")
+                                {
+                                    return res;
+                                }
+                            }
+                            if (res != null)
+                            {
+                                res = DataStringGp.BulkOperationDB_KPIReport(DataTbl, RepTime, Header);
+                            }
+                            else
+                            {
+                                return res;
+                            }
+                            if (res != null)
+                            {
+                                res = DataStringGp.InsertKPIStatus(UserId, EmpID, Month, Year);
                                 //return DataTbl.Rows.Count.ToString();
                                 return res;
                             }

@@ -268,6 +268,7 @@
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\EncryptionHelper.cs" />
     <Compile Include="Models\Generate_dt.cs" />
+    <Compile Include="Models\KPIModel.cs" />
     <Compile Include="Models\USHRModel.cs" />
     <Compile Include="Models\Logic.cs" />
     <Compile Include="Models\InventoryModel.cs" />
@@ -305,6 +306,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="wwwroot\GPReport.png" />
     <Content Include="wwwroot\HR.png" />
+    <Content Include="wwwroot\KPIUploader.png" />
     <Content Include="wwwroot\PerformanceEvl.png" />
     <Content Include="wwwroot\PnlStatement.png" />
     <Content Include="wwwroot\Spinner.gif" />
@@ -340,7 +342,7 @@
     <Content Include="Views\Login\Register.cshtml" />
     <Content Include="Views\Login\ForgotPassword.cshtml" />
     <Content Include="Views\Shared\_Navbar.cshtml" />
-    <Content Include="Views\Home\Inventoryuploader - Copy.cshtml" />
+    <Content Include="Views\Home\KPIUploader.cshtml" />
     <Content Include="Views\BulkUploader\UploadExcel.cshtml" />
     <Content Include="Views\Home\USHRUploader.cshtml" />
   </ItemGroup>
