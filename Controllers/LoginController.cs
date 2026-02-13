@@ -25,8 +25,16 @@ public class LoginController : Controller
         {
             Session["Email"] = user.Email;
             Session["Password"] = user.PasswordHash;
-            TempData["LoginSts"] = 1;
 
+            //Get system details
+            string ip = Request.UserHostAddress;
+            string port = Request.Url.Port.ToString();
+            string userAgent = Request.UserAgent;
+
+            //Save login log (call STP))
+            VrrModel.InsertLoginLog(ip, port, userAgent);
+
+            TempData["LoginSts"] = 1;
             TempData["Success"] = "Login successful";
             return RedirectToAction("Index", "Home");
         }

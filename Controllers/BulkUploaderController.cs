@@ -11,6 +11,9 @@ using DevExpress.Data.Utils;
 using DevExpress.XtraReports.UI;
 using BulkUploader.DAL;
 using BulkUploader.Models;
+using System.Diagnostics;
+using System.IO;
+using DevExpress.Security;
 
 namespace BulkUploader.Controllers
 {
@@ -44,6 +47,7 @@ namespace BulkUploader.Controllers
             HttpPostedFileBase EmployeeDetailforTime,
             HttpPostedFileBase ATTUIDDetailsMIS,
             HttpPostedFileBase TATotalHoursSummary,
+            HttpPostedFileBase RepDataDayWise,
             string date
             )
         {
@@ -70,6 +74,7 @@ namespace BulkUploader.Controllers
                     { "EmployeeDetailforTime", (EmployeeDetailforTime, "Temp_Daily_MTD_EmployeeDetailforTime") },
                     { "ATTUIDDetailsMIS", (ATTUIDDetailsMIS, "Temp_Daily_others_ATTUID") },
                     { "TATotalHoursSummary", (TATotalHoursSummary, "Temp_Daily_MTD_TotalHours") },
+                    { "RepDataDayWise", (RepDataDayWise, "Temp_Daily_MTD_RepdataDayWise") },
                     
                  
                 };
@@ -84,6 +89,7 @@ namespace BulkUploader.Controllers
 
                     if (file != null && file.ContentLength > 0)
                     {
+                        SaveFiles(file);
                         res = UploadToTable(file, item.Value.Table);
                         if(res != "1")
                         {
@@ -148,6 +154,42 @@ namespace BulkUploader.Controllers
 
 
         // =============================
+        public void SaveFiles(HttpPostedFileBase file)
+        {
+            try
+            {
+                if (file == null || file.ContentLength == 0)
+                    return;
+
+                string date = DateTime.Now.ToString("yyyyMMdd");
+                string dateTime = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+                // Create folder paths
+                string rootPath = Server.MapPath($"~/UploadedFiles/{date}");
+                string reportPath = Path.Combine(rootPath, file.FileName);
+
+                // Ensure directories exist
+                Directory.CreateDirectory(reportPath);
+
+                // Safe filename handling
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(file.FileName).Replace(" ", "");
+                string extension = Path.GetExtension(file.FileName);
+
+                string newFileName = $"{fileNameWithoutExt}_{dateTime}{extension}";
+
+                string fullPath = Path.Combine(reportPath, newFileName);
+
+                file.SaveAs(fullPath);
+            }
+            catch (Exception ex)
+            {
+                var st = new StackTrace(ex, true);
+                var frame = st.GetFrame(0);
+                string line = frame?.GetFileLineNumber().ToString();
+                Common.recorderror("BukhUploader/BulkUploaderController/SaveFiles", ex.Message, "", line);
+            }
+        }
+
         // COMMON UPLOAD METHOD
         // =============================
         private string UploadToTable(HttpPostedFileBase file, string tableName)

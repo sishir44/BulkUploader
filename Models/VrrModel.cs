@@ -473,6 +473,26 @@ namespace BulkUploader.Models
             }
 
         }
+
+        public static string InsertLoginLog(string port, string ipAddress, string userAgenet)
+        {
+            try
+            {
+                DAL.DAL obj = new DAL.DAL();
+                SPParameters sp = new SPParameters();
+                obj.ProcName = "InsertMTDCustomerNew";
+                sp.SetParam("IpAddress", SqlDbType.NVarChar, ipAddress);
+                sp.SetParam("Port", SqlDbType.NVarChar, port);
+                sp.SetParam("UserAgent", SqlDbType.NVarChar, userAgenet);
+                string response = obj.AddData(sp);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+        }
         public static DataTable GetCustomerCount()
         {
             try
