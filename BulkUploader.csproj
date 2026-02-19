@@ -310,6 +310,7 @@
     <Content Include="wwwroot\PerformanceEvl.png" />
     <Content Include="wwwroot\PnlStatement.png" />
     <Content Include="wwwroot\Spinner.gif" />
+    <Content Include="wwwroot\WirelessActivity.png" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -345,6 +346,7 @@
     <Content Include="Views\Home\KPIUploader.cshtml" />
     <Content Include="Views\BulkUploader\UploadExcel.cshtml" />
     <Content Include="Views\Home\USHRUploader.cshtml" />
+    <Content Include="Views\Home\WirelessActivityUploader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\" />
