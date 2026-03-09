@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -418,18 +419,18 @@ namespace BulkUploader.Models
                 VrrModel.DeleteVrrPdr(dt.TableName);
 
                 // Add RepTime column if not exists
-                if (!dt.Columns.Contains("RepTime"))
-                {
-                    DataColumn repTimeCol = new DataColumn("RepTime", typeof(string));
-                    repTimeCol.DefaultValue = repTime;
-                    dt.Columns.Add(repTimeCol);
-                }
+                //if (!dt.Columns.Contains("RepTime"))
+                //{
+                //    DataColumn repTimeCol = new DataColumn("RepTime", typeof(string));
+                //    repTimeCol.DefaultValue = repTime;
+                //    dt.Columns.Add(repTimeCol);
+                //}
 
                 // Ensure header includes RepTime
-                if (!header.Rows.Cast<DataRow>().Any(r => r["COLUMN_NAME"].ToString() == "RepTime"))
-                {
-                    header.Rows.Add("RepTime");
-                }
+                //if (!header.Rows.Cast<DataRow>().Any(r => r["COLUMN_NAME"].ToString() == "RepTime"))
+                //{
+                //    header.Rows.Add("RepTime");
+                //}
 
                 var skipCols = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "RepTime" };
 
@@ -735,13 +736,14 @@ namespace BulkUploader.Models
         {
             try
             {
+                Month = DateTime.ParseExact(Month, "yyyy-MM-dd", CultureInfo.InvariantCulture).ToString("yyyyMMdd");
                 string res = "";
                 DAL.DAL objDal = new DAL.DAL();
-                objDal.ProcName = "";
+                objDal.ProcName = "updatefct_my_mtdwirelessactivity";
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 //spParam.SetParam("@Year", SqlDbType.VarChar, Year);
                 //spParam.SetParam("@UserID", SqlDbType.VarChar, UserId);
-                //spParam.SetParam("@month", SqlDbType.VarChar, Month);
+                spParam.SetParam("@datekey", SqlDbType.Char, Month);
                 //spParam.SetParam("@EmpId", SqlDbType.VarChar, EmpID);
                 res = objDal.AddData(spParam);
 

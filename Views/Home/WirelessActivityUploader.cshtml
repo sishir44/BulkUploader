@@ -261,13 +261,24 @@
         .btn-right {
             float: right;
         }
+        #date {
+            background-color: #E9F0FB;
+            color: black;
+            margin-left: auto;
+            margin-right: 10px;
+            display: block;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            margin-top: 10px;
+            font-size: 20px;
+        }
 
     </style>
 </head>
 <body>
-   
+
     @*@Html.Partial("_Navbar")*@
-    
+
     <div class="fixed-page">
 
         <!-- TOP SECTION -->
@@ -282,6 +293,7 @@
                     new { id = "form", enctype = "multipart/form-data" }))
                 {
 
+                    <input type="date" id="date" name="UploadDate" class="dateInput" />
                     <div class="upload-box">
                         <input type="file" name="file" id="file" />
                         <span>Upload Excel File</span>
@@ -320,6 +332,22 @@
         </div>
 
     </div>
+
+    <script>
+        let d = new Date();
+        d.setDate(d.getDate() - 1);
+        document.getElementById("date").value =
+            d.getFullYear() + "-" +
+            String(d.getMonth() + 1).padStart(2, '0') + "-" +
+            String(d.getDate()).padStart(2, '0');
+
+        let displayDate =
+            String(d.getDate()).padStart(2, '0') + "-" +
+            String(d.getMonth() + 1).padStart(2, '0') + "-" +
+            d.getFullYear();
+
+        console.log(displayDate); // 09-03-2026
+    </script>
 
     <script>
         document.addEventListener('keydown', function (e) {

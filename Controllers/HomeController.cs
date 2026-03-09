@@ -292,8 +292,8 @@ namespace BulkUploader.Controllers
         {
             ViewBag.EmpIDList = DataStringGp.GetEmpIDList();
             model.EmpID = model.EmpID == "All" ? null : model.EmpID;
-            model.Month = model.Month == "All" ? null : model.Month;
-
+            //model.Month = model.Month == "All" ? null : model.Month;
+            model.Month = model.UploadDate;
             try
             {
                 string res = "Please Upload WirelessActivity file";
