@@ -347,6 +347,7 @@
     <Content Include="Views\BulkUploader\UploadExcel.cshtml" />
     <Content Include="Views\Home\USHRUploader.cshtml" />
     <Content Include="Views\Home\WirelessActivityUploader.cshtml" />
+    <Content Include="Views\BulkUploader\CommissionUploader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\" />
