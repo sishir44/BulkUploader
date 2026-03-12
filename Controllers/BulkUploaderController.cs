@@ -213,7 +213,7 @@ namespace BulkUploader.Controllers
 
                 if (res == "1")
                 {
-                    status = DataStringGp.UploaderUpdateSTP(date);
+                    status = DataStringGp.CommissionUpdateSTP(date);
                     if (status == "1")
                     {
                         ViewBag.Success = "Uploaded Successfully!";

@@ -825,6 +825,34 @@ namespace BulkUploader.Models
             }
         }
 
+        public static string CommissionUpdateSTP(string date)
+        {
+            try
+            {
+                string status = "";
+                //DateTime InputDate = DateTime.Now.Date;
+                //string formattedDate = InputDate.ToString("yyyy-MM-dd");
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "updateFct_my_mtd_Comissionsummary";
+                DAL.SPParameters spParam = new DAL.SPParameters();
+                spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
+                status = objDal.AddData(spParam);
+                if (status == "Operation was successful")
+                {
+                    status = "1";
+                }
+                else
+                {
+                    status = status;
+                }
+                return status;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
 
         public static string InsertGPStatus()
         {
