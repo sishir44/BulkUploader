@@ -13,7 +13,7 @@
     }
 
     .upload-wrapper {
-        width: 700px;
+        width: 950px;
         margin: 10px auto;
         padding: 5px 10px;
         background: #ffffff;
@@ -28,12 +28,11 @@
         font-weight: 500;
         color: #2d89ef;
         letter-spacing: 0.5px;
-        font-size:25px;
     }
 
     .file-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 2px 3px;
     }
 
@@ -69,7 +68,7 @@
     }
 
     .upload-btn {
-        width: 25%;
+        width: 15%;
         margin-top: 15px;
         padding: 12px;
         background: linear-gradient(135deg, #2d89ef, #1b5fa7);
@@ -149,7 +148,7 @@
     .date-wrapper {
         position: absolute;
         right: 5%;
-        top: 80%;
+        top: 50%;
         transform: translateY(-50%);
         display: flex;
         align-items: center;
@@ -188,6 +187,34 @@
     }
 </style>
 
+<style>
+#loaderOverlay{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.3);
+    z-index:9999;
+    justify-content:center;
+    align-items:center;
+}
+
+.circle-loader{
+    border:8px solid #f3f3f3;
+    border-top:8px solid #007bff;
+    border-radius:50%;
+    width:70px;
+    height:70px;
+    animation:spin 1s linear infinite;
+}
+
+@@keyframes spin{
+    0%{ transform:rotate(0deg); }
+    100%{ transform:rotate(360deg); }
+}
+</style>
 
 
 @*@Html.Partial("_Navbar")*@
@@ -224,90 +251,85 @@
                 <input type="file" name="CommissionAccessories" accept=".xls,.xlsx" />
             </div>
 
-            @*<div class="file-row">
-                <label>MIS Location</label>
-                <input type="file" name="MISLocation" accept=".xls,.xlsx" />
+            <div class="file-row">
+                <label>SMFBB Detail MOBILY</label>
+                <input type="file" name="SMFBBDetail" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
-                <label>KPI Location 1</label>
-                <input type="file" name="KPILocation1" accept=".xls,.xlsx" />
+                <label>SMF Detail MOBILY</label>
+                <input type="file" name="SMFDetail" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>AR Compensation Offset</label>
+                <input type="file" name="ARCompensationOffset" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Demo Devices</label>
+                <input type="file" name="DemoDevices" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Intangible SKUs</label>
+                <input type="file" name="IntangibleSKUs" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Jline</label>
+                <input type="file" name="Jline" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Manual Discount</label>
+                <input type="file" name="ManualDiscount" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Restocking</label>
+                <input type="file" name="Restocking" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Returns</label>
+                <input type="file" name="Returns" accept=".xls,.xlsx" />
+            </div>
+
+            @*<div class="file-row">
+                <label>Inventory Shrink</label>
+                <input type="file" name="InventoryShrink" accept=".xls,.xlsx" />
             </div>*@
 
-            @*<div class="file-row">
-            <label>MIS National</label>
-            <input type="file" name="MISNational" accept=".xls,.xlsx" />
-        </div>*@
-
-            @*<div class="file-row">
-                <label>MTD National 1</label>
-                <input type="file" name="MTDNational1" accept=".xls,.xlsx" />
+            <div class="file-row">
+                <label>RLO Not Received</label>
+                <input type="file" name="RLONotReceived" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
-                <label>MTD National 2</label>
-                <input type="file" name="MTDNational2" accept=".xls,.xlsx" />
+                <label>Serialized Sold</label>
+                <input type="file" name="SerializedSold" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
-                <label>MTD Location 3</label>
-                <input type="file" name="MTDLocation3" accept=".xls,.xlsx" />
+                <label>Shrink</label>
+                <input type="file" name="Shrink" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
-                <label>MTD Location 4</label>
-                <input type="file" name="MTDLocation4" accept=".xls,.xlsx" />
+                <label>Trade Ins </label>
+                <input type="file" name="TradeIns" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
-                <label>Leads Called </label>
-                <input type="file" name="LeadsCalled" accept=".xls,.xlsx" />
+                <label>Treasury</label>
+                <input type="file" name="Treasury" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
-                <label>Employee Rep Data</label>
-                <input type="file" name="EmployeeRepData" accept=".xls,.xlsx" />
+                <label>Wireless Bill Creds</label>
+                <input type="file" name="WirelessBillCreds" accept=".xls,.xlsx" />
             </div>
-
-            <div class="file-row">
-                <label>Marketing </label>
-                <input type="file" name="Marketing" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Requisitions Table</label>
-                <input type="file" name="RequisitionsTable" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Wiredraw </label>
-                <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Wirelessraw </label>
-                <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Employee Detail for Time</label>
-                <input type="file" name="EmployeeDetailforTime" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>ATTUID Details MIS</label>
-                <input type="file" name="ATTUIDDetailsMIS" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>TA Total Hours Summary</label>
-                <input type="file" name="TATotalHoursSummary" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Rep Data Day Wise</label>
-                <input type="file" name="RepDataDayWise" accept=".xls,.xlsx" />
-            </div>*@
 
         </div>
 
@@ -334,12 +356,23 @@
     }
 </div>
 
+<div id="loaderOverlay">
+    <div class="circle-loader"></div>
+</div>
 @*<div id="loader" style="display:block;">
         <div class="spinner"></div>
         <p>Uploading files... Please wait</p>
     </div>*@
 
+<script>
+    document.getElementById("excelForm").addEventListener("submit", function () {
 
+        document.getElementById("loaderOverlay").style.display = "flex";
+
+        document.getElementById("uploadBtn").disabled = true;
+
+    });
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -354,8 +387,6 @@
 
     });
 </script>
-
-
 
 <script>
     document.querySelectorAll('input[type="file"]').forEach(input => {
@@ -374,7 +405,6 @@
 
     });
 </script>
-
 
 <script>
     document.addEventListener("keydown", function (e) {

@@ -167,17 +167,48 @@ namespace BulkUploader.Controllers
         public ActionResult CommissionUploader(
             HttpPostedFileBase CommissionDetails,
             HttpPostedFileBase CommissionAccessories,
+            HttpPostedFileBase SMFBBDetail,
+            HttpPostedFileBase SMFDetail,
+            HttpPostedFileBase ARCompensationOffset,
+            HttpPostedFileBase DemoDevices,
+            HttpPostedFileBase IntangibleSKUs,
+            HttpPostedFileBase Jline,
+            HttpPostedFileBase ManualDiscount,
+            HttpPostedFileBase Restocking,
+            HttpPostedFileBase Returns,
+            //HttpPostedFileBase InventoryShrink,
+            HttpPostedFileBase RLONotReceived,
+            HttpPostedFileBase SerializedSold,
+            HttpPostedFileBase Shrink,
+            HttpPostedFileBase TradeIns,
+            HttpPostedFileBase Treasury,
+            HttpPostedFileBase WirelessBillCreds,
             string date
             )
         {
             try
-            {
+            {             
                 var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
-        {
+                    {
 
-            { "CommissionDetails", (CommissionDetails, "Temp_my_mtdommissionDetail") },
-            { "CommissionAccessories", (CommissionAccessories,"Temp_my_mtdommissionAccessories") },
-        };
+                        { "CommissionDetails", (CommissionDetails, "Temp_my_mtdommissionDetail") },
+                        { "CommissionAccessories", (CommissionAccessories,"Temp_my_mtdommissionAccessories") },
+                        { "SMFBBDetail", (SMFBBDetail,"Temp_SMFBBDetail") },
+                        { "SMFDetail", (SMFDetail,"Temp_SMFDetail") },
+                        { "ARCompensationOffset", (ARCompensationOffset,"Temp_ARCompensation_Offset") },
+                        { "DemoDevices", (DemoDevices,"temp_demodevices") },
+                        { "IntangibleSKUs", (IntangibleSKUs,"Temp_intangible") },
+                        { "Jline", (Jline,"temp_jline") },
+                        { "ManualDiscount", (ManualDiscount,"temp_manualdiscounts") },
+                        { "Restocking", (Restocking,"Temp_Restocking") },
+                        { "Returns", (Returns,"Temp_Returns") },
+                        { "RLONotReceived", (RLONotReceived,"Temp_RLONotRecieved") },
+                        { "SerializedSold", (SerializedSold,"Temp_SerializedSold") },
+                        { "Shrink", (Shrink,"Temp_Shrink") },
+                        { "TradeIns", (TradeIns,"temp_tradein") },
+                        { "Treasury", (Treasury,"temp_treasury") },
+                        { "WirelessBillCreds", (WirelessBillCreds,"Temp_WirelessBillCreds") },
+                    };
                 //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
                 var uploadedFiles = new List<string>();
                 var missingFiles = new List<string>();
@@ -224,12 +255,12 @@ namespace BulkUploader.Controllers
                         ViewBag.Error = status;
                     }
                 }
-                return View("UploadExcel");
+                return View("CommissionUploader");
             }
             catch (System.Exception ex)
             {
                 ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
-                return View("UploadExcel");
+                return View("CommissionUploader");
             }
         }
 
@@ -297,7 +328,7 @@ namespace BulkUploader.Controllers
                         if (row[col] == null || string.IsNullOrWhiteSpace(row[col].ToString()))
                         {
                             row[col] = DBNull.Value;
-                        }
+                        } 
                     }
                 }
                 return BulkInsert(dt, tableName);
