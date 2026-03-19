@@ -837,15 +837,25 @@ namespace BulkUploader.Models
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
                 status = objDal.AddData(spParam);
-                if (status == "Operation was successful")
-                {
-                    status = "1";
-                }
-                else
-                {
-                    status = status;
-                }
-                return status;
+                return status == "Operation was successful" ? "1" : status;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static string FraudTransactionUpdateSTP(string date)
+        {
+            try
+            {
+                string status = "";
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "";
+                DAL.SPParameters spParam = new DAL.SPParameters();
+                spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
+                status = objDal.AddData(spParam);
+                return status == "Operation was successful" ? "1" : status;
             }
             catch (Exception ex)
             {
