@@ -1,0 +1,242 @@
+@{
+    ViewBag.Title = "Chargeback Raw Uploader";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .fixed-page {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top section */
+        .top-section {
+            flex: 0 0 auto;
+            padding: 15px;
+            background: linear-gradient(135deg, #e0f2ff, #f9fbff);
+        }
+
+        /* Card */
+        .upload-card {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px 20px;
+            border-radius: 14px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+        }
+
+        .title {
+            text-align: center;
+            color: #1e88e5;
+            margin-bottom: 15px;
+        }
+
+        .upload-box {
+            border: 2px dashed #1e88e5;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 12px;
+            width: 80%;
+            font-weight: 600;
+        }
+
+        .btn-upload {
+            width: 40%;
+            padding: 10px;
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            display: block;
+            margin: 15px auto;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+            .btn-upload:disabled {
+                background: #cccccc;
+                cursor: not-allowed;
+            }
+
+        .loader {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .btn-right {
+            float: right;
+        }
+
+        #date {
+            background-color: #E9F0FB;
+            color: black;
+            margin-left: auto;
+            margin-right: 10px;
+            display: block;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            margin-top: 10px;
+            font-size: 20px;
+            padding: 4px 8px;
+        }
+
+        .response {
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Bottom image */
+        .image-section {
+            flex: 1;
+            padding: 10px;
+            background: #f5f9ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-page">
+
+        <!-- TOP SECTION -->
+        <div class="top-section">
+            <div class="upload-card">
+
+                <button class="btn btn-outline-primary btn-right" onclick="refresh()">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+
+                <h2 class="title">Chargeback Raw Upload</h2>
+
+                @using (Html.BeginForm("ChargebackRawUploader", "Home", FormMethod.Post,
+                    new { id = "form", enctype = "multipart/form-data" }))
+                {
+                    <input type="date" id="date" name="UploadDate" />
+
+                    <div class="upload-box">
+                        <input type="file" name="file" id="file" />
+                        <span>Upload Excel File</span>
+                    </div>
+
+                    <button type="submit" id="load" class="btn-upload" disabled>
+                        <i class="bi bi-cloud-upload"></i> Upload Report
+                    </button>
+
+                    <div id="div_1" class="loader">
+                        <img src="~/wwwroot/Spinner.gif" width="40" height="40" />
+                        <span>Uploading, please wait...</span>
+                    </div>
+
+                    <p class="response" style="color:@ViewBag.Style;">
+                        @if (ViewBag.Style == "green")
+                        {
+                            <i class="bi bi-check-circle-fill"></i>
+                        }
+                        else if (ViewBag.Style == "red")
+                        {
+                            <i class="bi bi-x-circle-fill"></i>
+                        }
+                        @ViewBag.Message
+                    </p>
+                }
+
+            </div>
+        </div>
+
+        <!-- BOTTOM IMAGE SECTION -->
+        <div class="image-section">
+            <img src="~/wwwroot/ChargebackRaw.png"
+                 alt="Chargeback Raw Sample"
+                 class="preview-img" />
+        </div>
+
+    </div>
+
+    <script>
+        // Default date = yesterday
+        let d = new Date();
+        d.setDate(d.getDate() - 1);
+        document.getElementById("date").value =
+            d.getFullYear() + "-" +
+            String(d.getMonth() + 1).padStart(2, '0') + "-" +
+            String(d.getDate()).padStart(2, '0');
+    </script>
+
+    <script>
+        function refresh() {
+            window.location.reload();
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === '5') e.preventDefault();
+        });
+    </script>
+
+    <script>
+        $(function () {
+            $('#form').on('submit', function () {
+                $('#load').attr('disabled', true);
+                $('#div_1').show();
+            });
+        });
+    </script>
+
+    <script>
+        document.getElementById('file').addEventListener('change', function () {
+            var filePath = this.value;
+            var allowedExtensions = /(\.xls|\.xlsx|\.csv)$/i;
+
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Please upload only Excel files (.xls or .xlsx or .csv).');
+                this.value = '';
+                return false;
+            }
+            $('#load').attr('disabled', false);
+        });
+
+        document.getElementById('form').addEventListener('submit', function (e) {
+            var fileInput = document.getElementById('file');
+            if (!fileInput.value) {
+                alert("Please select an Excel file before submitting.");
+                e.preventDefault();
+                return false;
+            } else {
+                document.getElementById('div_1').style.display = 'none';
+            }
+        });
+    </script>
+
+</body>
+</html>

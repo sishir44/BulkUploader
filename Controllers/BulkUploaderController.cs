@@ -191,9 +191,8 @@ namespace BulkUploader.Controllers
             {             
                 var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
                     {
-
-                        { "CommissionDetails", (CommissionDetails, "Temp_my_mtdommissionDetail") },
-                        { "CommissionAccessories", (CommissionAccessories,"Temp_my_mtdommissionAccessories") },
+                        { "CommissionDetails", (CommissionDetails, "Temp_my_mtdcommissionDetail") },
+                        { "CommissionAccessories", (CommissionAccessories,"Temp_my_mtdcommissionAccessories") },
                         { "SMFBBDetail", (SMFBBDetail,"Temp_SMFBBDetail") },
                         { "SMFDetail", (SMFDetail,"Temp_SMFDetail") },
                         { "ARCompensationOffset", (ARCompensationOffset,"Temp_ARCompensation_Offset") },
@@ -247,7 +246,7 @@ namespace BulkUploader.Controllers
                 if (res == "1")
                 {
                     status = DataStringGp.CommissionUpdateSTP(date);
-                    if (status == "1")
+                    if (status == "1" || Convert.ToInt32(status) > 0)
                     {
                         ViewBag.Success = "Uploaded Successfully!";
                     }
@@ -274,14 +273,8 @@ namespace BulkUploader.Controllers
         {
             return View();
         }
-
-        // POST
         [HttpPost]
-        public ActionResult FraudTransactionUploader(
-            HttpPostedFileBase ManualCC,
-            HttpPostedFileBase MAPARHistoricalAnalysis,
-            string date
-            )
+        public ActionResult FraudTransactionUploader(HttpPostedFileBase ManualCC,HttpPostedFileBase MAPARHistoricalAnalysis, string date)
         {
             try
             {
@@ -327,7 +320,7 @@ namespace BulkUploader.Controllers
                 if (res == "1")
                 {
                     status = DataStringGp.FraudTransactionUpdateSTP(date);
-                    if (status == "1")
+                    if (status == "1" || Convert.ToInt32(status) > 0)
                     {
                         ViewBag.Success = "Uploaded Successfully!";
                     }

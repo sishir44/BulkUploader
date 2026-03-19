@@ -851,9 +851,9 @@ namespace BulkUploader.Models
             {
                 string status = "";
                 DAL.DAL objDal = new DAL.DAL();
-                objDal.ProcName = "";
+                objDal.ProcName = "updateFraudTransactions";
                 DAL.SPParameters spParam = new DAL.SPParameters();
-                spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
+                spParam.SetParam("@DateParam", SqlDbType.VarChar, date);
                 status = objDal.AddData(spParam);
                 return status == "Operation was successful" ? "1" : status;
             }
@@ -973,6 +973,126 @@ namespace BulkUploader.Models
                 string DifferentialData = VrrModel.InsertDifferentialReportdataNew();
 
                 return "Data has been Uploaded Successfully";
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
+        public static string BulkOperationDB_ChargebackRaw(DataTable dt, DataTable header)
+        {
+            try
+            {
+                if (dt.Rows.Count == 0) return "No data to upload";
+
+                VrrModel.DeleteVrrPdr(dt.TableName);
+
+                // ✅ SAME pattern as all other BulkOperation methods
+                // Columns to skip from numeric conversion (text columns)
+                var skipCols = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "Payee Name", "Location Name", "Location ID", "Order ID",
+            "Customer Name", "IRU/CRU", "Business Segment", "Product Code",
+            "Product Code Dscr", "Ref Product Code", "Assoc Product Code",
+            "Sub Cohort", "Video Migration Ind", "Data Capacity Code",
+            "Device Type", "Device Status", "Device Category", "Device Subcategory",
+            "Device Data Code", "IMEI", "SKU", "SIM/ICCID", "Trans Type",
+            "Action Dscr", "Event", "Comp Plan Name", "Comp Plan Descr",
+            "Schedule Type", "Prev Product Code", "Is Nextup",
+            "Action Date", "Recon Date", "Disc Date"  // keep dates as string
+        };
+
+                foreach (var col in dt.Columns.Cast<DataColumn>()
+                             .Where(c => c.DataType == typeof(string) && !skipCols.Contains(c.ColumnName))
+                             .ToList())
+                {
+                    bool isNumeric = dt.AsEnumerable().All(row =>
+                    {
+                        string val = row[col.ColumnName]?.ToString()
+                            .Replace("%", "").Replace("$", "").Replace(",", "").Trim();
+                        return string.IsNullOrWhiteSpace(val) || float.TryParse(val, out _);
+                    });
+
+                    if (isNumeric)
+                    {
+                        string floatColName = col.ColumnName + "_float";
+                        DataColumn floatCol = new DataColumn(floatColName, typeof(float));
+                        dt.Columns.Add(floatCol);
+
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            string valStr = row[col.ColumnName]?.ToString()
+                                .Replace("%", "").Replace("$", "").Replace(",", "").Trim();
+                            row[floatCol] = float.TryParse(valStr, out float f) ? f : 0f;
+                        }
+
+                        dt.Columns.Remove(col.ColumnName);
+                        floatCol.ColumnName = col.ColumnName;
+                    }
+                }
+
+                // ✅ Handle datetime columns — convert to string so BulkCopy maps to nvarchar in DB
+                // OR if your DB has datetime columns, leave them as-is
+                // If Action Date / Recon Date / Disc Date are nvarchar in DB, convert datetime → string
+                var dateCols = new[] { "Action Date", "Recon Date", "Disc Date" };
+                foreach (var dateColName in dateCols)
+                {
+                    if (!dt.Columns.Contains(dateColName)) continue;
+                    var dateCol = dt.Columns[dateColName];
+                    if (dateCol.DataType == typeof(DateTime) || dateCol.DataType == typeof(object))
+                    {
+                        string tempName = dateColName + "_str";
+                        DataColumn strCol = new DataColumn(tempName, typeof(string));
+                        dt.Columns.Add(strCol);
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            var val = row[dateColName];
+                            row[strCol] = (val == null || val == DBNull.Value)
+                                ? (object)DBNull.Value
+                                : Convert.ToDateTime(val).ToString("yyyy-MM-dd");
+                        }
+                        dt.Columns.Remove(dateColName);
+                        strCol.ColumnName = dateColName;
+                    }
+                }
+
+                string connStr = ConfigurationManager.ConnectionStrings["APIConnStr"].ToString();
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connStr, SqlBulkCopyOptions.FireTriggers))
+                {
+                    bulkCopy.DestinationTableName = dt.TableName;
+                    bulkCopy.BulkCopyTimeout = 6000;
+
+                    foreach (DataRow row in header.Rows)
+                    {
+                        string colName = row["COLUMN_NAME"].ToString();
+                        if (dt.Columns.Contains(colName))
+                            bulkCopy.ColumnMappings.Add(colName, colName);
+                    }
+
+                    bulkCopy.WriteToServer(dt);
+                }
+
+                return "Data has been Uploaded Successfully";
+            }
+            catch (Exception ex)
+            {
+                string colInfo = string.Join(", ", dt.Columns.Cast<DataColumn>()
+                    .Select(c => $"{c.ColumnName}:{c.DataType.Name}"));
+                return "ERR: " + ex.Message + " | COLS: " + colInfo;
+            }
+        }
+        public static string InsertChargebackRawStatus(string inputDate)
+        {
+            try
+            {
+                string res = "";
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "updateChargebackRaw";
+                DAL.SPParameters spParam = new DAL.SPParameters(); // no params
+                res = objDal.AddData(spParam);
+                return res;
             }
             catch (Exception ex)
             {

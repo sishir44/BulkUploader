@@ -317,6 +317,41 @@ namespace BulkUploader.Controllers
             }
         }
 
+        public ActionResult ChargebackRawUploader()
+        {
+            global.userID = Request.QueryString["userid"];
+            global.decrpedUserId = EncryptionHelper.Decrypt(global.userID);
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ChargebackRawUploader(InventoryModel model)
+        {
+            try
+            {
+                string res = "Please Upload ChargebackRaw file";
+                if (model.File != null && model.File.FileName != null)
+                {
+                    SaveFiles(model.File, "ChargebackRaw");
+                    model.Month = model.UploadDate;
+                    res = UploadFile(model.File, global.decrpedUserId, model.EmpID, model.Month, model.Year);
+                }
+
+                // ✅ ChargebackRaw returns a message string, not a row count
+                bool success = res != null && !res.StartsWith("Error") && !res.StartsWith("Following")
+                               && res != "Please Upload ChargebackRaw file";
+
+                ViewBag.Style = success ? "green" : "red";
+                ViewBag.Message = success ? "File uploaded successfully" : res;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = "File not Uploaded!";
+                ViewBag.Style = "red";
+                return View();
+            }
+        }
+
         //Excel Save file: Begin
         public void SaveFiles(HttpPostedFileBase file, string ReportName)
         {
@@ -829,6 +864,59 @@ namespace BulkUploader.Controllers
                             else
                             {
                                 return "Error occur during Insertion of Temp_USHR Data";
+                            }
+                        }  //================== SEPARATER====================//
+                        else if (result == "Temp_ChargebackRaw")
+                        {
+                            DataTbl = UploadExcel.GetDataTable(Obj);
+                            DataTbl.TableName = result;
+
+                            foreach (DataColumn col in DataTbl.Columns)
+                            {
+                                ExcelColNameList.Add(col.ColumnName);
+                            }
+
+                            Header = DataStringGp.GetTableColumnNames("Temp_ChargebackRaw");
+
+                            foreach (DataRow row in Header.Rows)
+                            {
+                                fixedColumns.Add(row["COLUMN_NAME"].ToString());
+                            }
+
+                            lstFieldsRequired = ExcelColNameList
+                                .Where(a => fixedColumns.Any(x => x.ToString().ToUpper() == a.ToString().ToUpper())).ToList();
+                            lstFieldsMissing = fixedColumns
+                                .Where(a => ExcelColNameList.All(x => x.ToString().ToUpper() != a.ToString().ToUpper())).ToList();
+
+                            if (lstFieldsMissing.Count > 0)
+                            {
+                                res += "Following columns are missing in ChargebackRaw file:";
+                                int a = 1;
+                                foreach (string field in lstFieldsMissing)
+                                {
+                                    res += "<br />" + a.ToString() + ") " + field;
+                                    a++;
+                                }
+                                return res;
+                            }
+
+                            if (res != null)
+                            {
+                                res = DataStringGp.BulkOperationDB_ChargebackRaw(DataTbl, Header);
+                            }
+                            else
+                            {
+                                return res;
+                            }
+
+                            if (res != null)
+                            {
+                                res = DataStringGp.InsertChargebackRawStatus(Month); // Month param carries UploadDate
+                                return res;
+                            }
+                            else
+                            {
+                                return "Error occurred during Insertion of Temp_ChargebackRaw Data";
                             }
                         }
                         //================== SEPARATER====================//
