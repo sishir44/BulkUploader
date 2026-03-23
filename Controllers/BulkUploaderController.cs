@@ -167,7 +167,7 @@ namespace BulkUploader.Controllers
         // POST
         [HttpPost]
         public ActionResult CommissionUploader(
-            HttpPostedFileBase CommissionStatements,
+            HttpPostedFileBase CommissionDetails,
             HttpPostedFileBase CommissionAccessories,
             HttpPostedFileBase SMFBBDetail,
             HttpPostedFileBase SMFDetail,
@@ -193,7 +193,7 @@ namespace BulkUploader.Controllers
             {             
                 var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
                     {
-                        { "CommissionStatements", (CommissionStatements, "Temp_my_mtdcommissionStatements") },
+                        { "CommissionDetails", (CommissionDetails, "Temp_my_mtdommissionDetail") },
                         { "CommissionAccessories", (CommissionAccessories,"Temp_my_mtdcommissionAccessories") },
                         { "SMFBBDetail", (SMFBBDetail,"Temp_SMFBBDetail") },
                         { "SMFDetail", (SMFDetail,"Temp_SMFDetail") },
