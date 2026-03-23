@@ -56,6 +56,76 @@ namespace BulkUploader.Controllers
             }
         }
 
+        [HttpGet]
+        [ValidateInput(false)]
+        public ActionResult BudGetGoalUploader()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult BudGetGoalUploader(HttpPostedFileBase MobilyBudGet, string date)
+        {
+            try
+            {
+                var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
+            {
+
+                { "MobilyBudGet", (MobilyBudGet,"Temp_BudGetGoal") },
+            };
+                var uploadedFiles = new List<string>();
+                var missingFiles = new List<string>();
+                string res = "";
+                string status = "";
+                foreach (var item in files)
+                {
+                    var file = item.Value.File;
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        SaveFile(file);
+                        res = UploadToTable(file, item.Value.Table);
+                        if (res != "1")
+                        {
+                            //ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
+                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key + "\n" + res;
+                            continue;
+                        }
+                        uploadedFiles.Add(item.Key);
+                    }
+                    else
+                    {
+                        missingFiles.Add(item.Key);
+                    }
+                }
+                if (uploadedFiles.Any() && res != "" && res != null)
+                {
+                    ViewBag.Success = "Data Uploaded to temp table: " + string.Join(", ", uploadedFiles);
+                }
+                if (missingFiles.Any())
+                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
+
+                if (res == "1")
+                {
+                    status = DataStringGp.BudGetGoalUpdateSTP(date);
+                    if (status == "1" || Convert.ToInt32(status) > 0)
+                    {
+                        ViewBag.Success = "Uploaded Successfully!";
+                    }
+                    else
+                    {
+                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                        ViewBag.Error = status;
+                    }
+                }
+                return View("BudGetGoalUploader");
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
+                return View("BudGetGoalUploader");
+            }
+        }
+
         public void SaveFiles(HttpPostedFileBase file, string ReportName)
         {
 
@@ -194,10 +264,10 @@ namespace BulkUploader.Controllers
                             {
                                 return "Something Went Wrong during Insertion of GP Report";
                             }
-                        }
+                        } 
                         else
                         {
-                            return "Please upload the file named 'TempGPt.xlsx'";
+                            return "Please upload the file";
                         }
                     }
                 }
@@ -213,5 +283,101 @@ namespace BulkUploader.Controllers
             return res;
         }
 
+
+        /* New */
+        public void SaveFile(HttpPostedFileBase file)
+        {
+            try
+            {
+                if (file == null || file.ContentLength == 0)
+                    return;
+
+                string date = DateTime.Now.ToString("yyyyMMdd");
+                string dateTime = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+                // Create folder paths
+                string rootPath = Server.MapPath($"~/UploadedFiles/{date}");
+                string reportPath = Path.Combine(rootPath, file.FileName);
+
+                // Ensure directories exist
+                Directory.CreateDirectory(reportPath);
+
+                // Safe filename handling
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(file.FileName).Replace(" ", "");
+                string extension = Path.GetExtension(file.FileName);
+
+                string newFileName = $"{fileNameWithoutExt}_{dateTime}{extension}";
+
+                string fullPath = Path.Combine(reportPath, newFileName);
+
+                file.SaveAs(fullPath);
+            }
+            catch (Exception ex)
+            {
+                var st = new StackTrace(ex, true);
+                var frame = st.GetFrame(0);
+                string line = frame?.GetFileLineNumber().ToString();
+                Common.recorderror("BukhUploader/BulkUploaderController/SaveFiles", ex.Message, "", line);
+            }
+        }
+
+        // ===========  COMMON UPLOAD METHOD ================== //
+        private string UploadToTable(HttpPostedFileBase file, string tableName)
+        {
+            if (file == null || file.ContentLength <= 0)
+            {
+                throw new Exception("File was not selected.");
+            }
+
+            using (var package = new ExcelPackage(file.InputStream))
+            {
+                var worksheet = package.Workbook.Worksheets[1];
+
+                DataTable dt = ExcelHelper.ExcelToDataTable(worksheet);
+
+                // 🔹 Convert empty cells to NULL
+                foreach (DataRow row in dt.Rows)
+                {
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        if (row[col] == null || string.IsNullOrWhiteSpace(row[col].ToString()))
+                        {
+                            row[col] = DBNull.Value;
+                        }
+                    }
+                }
+                return BulkInsert(dt, tableName);
+            }
+        }
+        // ===========  BULK INSERT METHOD  ================== //
+        public string BulkInsert(DataTable dt, string tableName)
+        {
+            try
+            {
+                string conStr = ConfigurationManager.ConnectionStrings["APIConnStr"].ConnectionString;
+
+                using (SqlConnection con = new SqlConnection(conStr))
+                {
+                    con.Open();
+                    // 🔹 Step 1: Delete old records
+                    using (SqlCommand cmd = new SqlCommand($"DELETE FROM [{tableName}]", con))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    // 🔹 Step 2: Bulk insert new records
+                    using (SqlBulkCopy bulk = new SqlBulkCopy(con))
+                    {
+                        bulk.DestinationTableName = tableName;
+                        bulk.WriteToServer(dt);
+                    }
+                }
+                return "1";
+            }
+            catch (Exception ex)
+            {
+                return "Error has occured :  " + ex.Message;
+                //return "0";
+            }
+        }
     }
 }

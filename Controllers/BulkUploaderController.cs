@@ -14,6 +14,8 @@ using BulkUploader.Models;
 using System.Diagnostics;
 using System.IO;
 using DevExpress.Security;
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace BulkUploader.Controllers
 {
@@ -165,7 +167,7 @@ namespace BulkUploader.Controllers
         // POST
         [HttpPost]
         public ActionResult CommissionUploader(
-            HttpPostedFileBase CommissionDetails,
+            HttpPostedFileBase CommissionStatements,
             HttpPostedFileBase CommissionAccessories,
             HttpPostedFileBase SMFBBDetail,
             HttpPostedFileBase SMFDetail,
@@ -191,7 +193,7 @@ namespace BulkUploader.Controllers
             {             
                 var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
                     {
-                        { "CommissionDetails", (CommissionDetails, "Temp_my_mtdcommissionDetail") },
+                        { "CommissionStatements", (CommissionStatements, "Temp_my_mtdcommissionStatements") },
                         { "CommissionAccessories", (CommissionAccessories,"Temp_my_mtdcommissionAccessories") },
                         { "SMFBBDetail", (SMFBBDetail,"Temp_SMFBBDetail") },
                         { "SMFDetail", (SMFDetail,"Temp_SMFDetail") },
@@ -392,7 +394,6 @@ namespace BulkUploader.Controllers
 
                 DataTable dt = ExcelHelper.ExcelToDataTable(worksheet);
 
-                // 🔹 Convert empty cells to NULL
                 foreach (DataRow row in dt.Rows)
                 {
                     foreach (DataColumn col in dt.Columns)
@@ -400,9 +401,50 @@ namespace BulkUploader.Controllers
                         if (row[col] == null || string.IsNullOrWhiteSpace(row[col].ToString()))
                         {
                             row[col] = DBNull.Value;
-                        } 
+                        }
+                        else
+                        {
+                            string value = row[col].ToString().Trim();
+
+                            // ✅ 1. Handle Scientific Notation (e.g., 5.56E+11)
+                            if (value.Contains("E") || value.Contains("e"))
+                            {
+                                if (decimal.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal sciVal))
+                                {
+                                    row[col] = sciVal;
+                                    continue;
+                                }
+                            }
+
+                            // ✅ 2. Handle Currency, %, Parentheses
+                            if (Regex.IsMatch(value, @"^[\(\)\d\$\.,%]+$"))
+                            {
+                                // Remove parentheses → ignoring negative sign
+                                value = value.Replace("(", "").Replace(")", "");
+
+                                // Remove symbols
+                                value = value.Replace("$", "")
+                                             .Replace(",", "")
+                                             .Replace("%", "");
+
+                                if (decimal.TryParse(value, out decimal num))
+                                {
+                                    row[col] = num;
+                                }
+                                else
+                                {
+                                    row[col] = value;
+                                }
+                            }
+                            else
+                            {
+                                // ✅ Keep non-numeric text unchanged
+                                row[col] = value;
+                            }
+                        }
                     }
                 }
+
                 return BulkInsert(dt, tableName);
             }
         }

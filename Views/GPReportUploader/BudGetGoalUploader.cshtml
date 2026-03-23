@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewBag.Title = "Excel Upload";
 }
 @{
@@ -13,7 +13,7 @@
     }
 
     .upload-wrapper {
-        width: 950px;
+        width: 50%;
         margin: 10px auto;
         padding: 5px 10px;
         background: #ffffff;
@@ -32,8 +32,9 @@
 
     .file-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(1, 1fr);
         gap: 2px 3px;
+        margin-left: 150px !important;
     }
 
     .file-row {
@@ -68,7 +69,7 @@
     }
 
     .upload-btn {
-        width: 15%;
+        width: 20%;
         margin-top: 15px;
         padding: 12px;
         background: linear-gradient(135deg, #2d89ef, #1b5fa7);
@@ -188,45 +189,50 @@
 </style>
 
 <style>
-#loaderOverlay{
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.3);
-    z-index:9999;
-    justify-content:center;
-    align-items:center;
-}
+    #loaderOverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
 
-.circle-loader{
-    border:8px solid #f3f3f3;
-    border-top:8px solid #007bff;
-    border-radius:50%;
-    width:70px;
-    height:70px;
-    animation:spin 1s linear infinite;
-}
+    .circle-loader {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #007bff;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
 
-@@keyframes spin{
-    0%{ transform:rotate(0deg); }
-    100%{ transform:rotate(360deg); }
-}
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 
 
 @*@Html.Partial("_Navbar")*@
 
 <div class="upload-wrapper">
-    @using (Html.BeginForm("CommissionUploader", "BulkUploader",
+    @using (Html.BeginForm("BudGetGoalUploader", "GPReportUploader",
         FormMethod.Post,
         new { enctype = "multipart/form-data", id = "excelForm" }))
     {
 
         <div class="upload-header">
-            <h2 class="upload-title">&#128202; Commission Uploader</h2>
+            <h3 class="upload-title">&#128202; BudGet Goal</h3>
             <div class="date-wrapper">
                 @*<input type="date" class="date-picker" id="date" name="date" />*@
                 <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
@@ -242,98 +248,8 @@
         <div class="file-grid">
 
             <div class="file-row">
-                <label>Commission Statements</label>
-                <input type="file" name="CommissionStatements" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Commission Accessories</label>
-                <input type="file" name="CommissionAccessories" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>SMFBB Detail MOBILY</label>
-                <input type="file" name="SMFBBDetail" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>SMF Detail MOBILY</label>
-                <input type="file" name="SMFDetail" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>AR Compensation Offset</label>
-                <input type="file" name="ARCompensationOffset" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Demo Devices</label>
-                <input type="file" name="DemoDevices" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Intangible SKUs</label>
-                <input type="file" name="IntangibleSKUs" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Jline</label>
-                <input type="file" name="Jline" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Manual Discount</label>
-                <input type="file" name="ManualDiscount" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Restocking</label>
-                <input type="file" name="Restocking" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Returns</label>
-                <input type="file" name="Returns" accept=".xls,.xlsx" />
-            </div>
-
-            @*<div class="file-row">
-            <label>Inventory Shrink</label>
-            <input type="file" name="InventoryShrink" accept=".xls,.xlsx" />
-        </div>*@
-
-            <div class="file-row">
-                <label>RLO Not Received</label>
-                <input type="file" name="RLONotReceived" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Serialized Sold</label>
-                <input type="file" name="SerializedSold" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Shrink</label>
-                <input type="file" name="Shrink" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Trade Ins </label>
-                <input type="file" name="TradeIns" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Treasury</label>
-                <input type="file" name="Treasury" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Wireless Bill Creds</label>
-                <input type="file" name="WirelessBillCreds" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Profit And Loss Statement</label>
-                <input type="file" name="ProfitLossStatement" accept=".xls,.xlsx" />
+                <label>Mobily Budget</label>
+                <input type="file" name="MobilyBudGet" accept=".xls,.xlsx" />
             </div>
 
         </div>

@@ -304,6 +304,7 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="wwwroot\BudGetGoalUploader.png" />
     <Content Include="wwwroot\ChargebackRaw.png" />
     <Content Include="wwwroot\GPReport.png" />
     <Content Include="wwwroot\HR.png" />
@@ -351,6 +352,7 @@
     <Content Include="Views\BulkUploader\CommissionUploader.cshtml" />
     <Content Include="Views\BulkUploader\FraudTransactionUploader.cshtml" />
     <Content Include="Views\Home\ChargebackRawUploader.cshtml" />
+    <Content Include="Views\GPReportUploader\BudGetGoalUploader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\" />
