@@ -1,242 +1,366 @@
 @{
     ViewBag.Title = "Chargeback Raw Uploader";
-    Layout = null;
 }
+@{
+    ViewBag.DisableBulkyLink = true;
+}
+<meta charset="utf-8" />
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>@ViewBag.Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    body {
+        background: linear-gradient(135deg, #eef2f7, #dfe9f3);
+        font-family: "Segoe UI", sans-serif;
+    }
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    .upload-wrapper {
+        width: 700px;
+        margin: 10px auto;
+        padding: 5px 10px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        margin-top: 50px;
+    }
 
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            overflow: hidden;
-            font-family: 'Segoe UI', sans-serif;
-        }
+    .upload-title {
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: 500;
+        color: #2d89ef;
+        letter-spacing: 0.5px;
+    }
 
-        .fixed-page {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    .file-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 2px 3px;
+        margin-left: 80px !important;
+    }
 
-        /* Top section */
-        .top-section {
-            flex: 0 0 auto;
-            padding: 15px;
-            background: linear-gradient(135deg, #e0f2ff, #f9fbff);
-        }
+    .file-row {
+        display: flex;
+        flex-direction: column;
+        margin-left:20%;
+    }
 
-        /* Card */
-        .upload-card {
-            max-width: 500px;
-            margin: auto;
-            background: white;
-            padding: 20px 20px;
-            border-radius: 14px;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
-        }
-
-        .title {
-            text-align: center;
-            color: #1e88e5;
-            margin-bottom: 15px;
-        }
-
-        .upload-box {
-            border: 2px dashed #1e88e5;
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
-            margin-bottom: 12px;
-            width: 80%;
+        .file-row label {
+            font-size: 14px;
             font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
         }
 
-        .btn-upload {
-            width: 40%;
-            padding: 10px;
-            background: linear-gradient(135deg, #1e88e5, #1565c0);
-            border: none;
-            color: white;
-            border-radius: 8px;
-            display: block;
-            margin: 15px auto;
+        .file-row input[type=file] {
+            padding: 6px;
+            border: 1px dashed #b6c3d1;
+            border-radius: 6px;
+            background: #f8fbff;
             cursor: pointer;
-            font-size: 15px;
         }
 
-            .btn-upload:disabled {
-                background: #cccccc;
-                cursor: not-allowed;
+            .file-row input[type=file].invalid {
+                border-color: #e74c3c;
+                background: #fff3f3;
             }
 
-        .loader {
-            display: none;
-            text-align: center;
-            margin-top: 10px;
+    .error-text {
+        font-size: 12px;
+        color: #e74c3c;
+        display: none;
+    }
+
+    .upload-btn {
+        width: 20%;
+        margin-top: 15px;
+        padding: 12px;
+        background: linear-gradient(135deg, #2d89ef, #1b5fa7);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-left: 35%;
+        margin-bottom: 8px;
+    }
+
+    .success-msg {
+        margin-top: 15px;
+        text-align: center;
+        font-weight: 600;
+        color: green;
+    }
+
+    .hint {
+        text-align: center;
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 12px;
+    }
+
+    .upload-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    h4 {
+        margin-left:-5%;
+    }
+</style>
+
+<style>
+    #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.8);
+        display: flex;
+        justify-content: center !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+        flex-direction: column;
+        z-index: 9999;
+    }
+
+    .spinner {
+        width: 80px;
+        height: 80px;
+        border: 6px solid #ddd;
+        border-top: 6px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        vertical-align: central !important;
+        text-align: center !important;
+    }
+
+    @@keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<style>
+    .upload-header {
+        position: relative;
+        text-align: center;
+        margin-bottom: 12px;
+    }
+
+    /* ----- DATE BOX ----- */
+    .date-wrapper {
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #A4E1F5;
+        padding: 6px 12px;
+        border-radius: 10px;
+        border: 1px solid #dcdcdc;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: 0.25s ease;
+    }
+
+        /* hover effect */
+        .date-wrapper:hover {
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
         }
 
-        .btn-right {
-            float: right;
+    /* icon */
+    .date-icon {
+        font-size: 18px;
+    }
+
+    /* input style */
+    .date-picker {
+        border: none;
+        outline: none;
+        font-size: 14px;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    /* hint center */
+    .hint {
+        text-align: center;
+        color: #666;
+    }
+</style>
+
+<style>
+    #loaderOverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .circle-loader {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #007bff;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
         }
 
-        #date {
-            background-color: #E9F0FB;
-            color: black;
-            margin-left: auto;
-            margin-right: 10px;
-            display: block;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            margin-top: 10px;
-            font-size: 20px;
-            padding: 4px 8px;
+        100% {
+            transform: rotate(360deg);
         }
+    }
+</style>
 
-        .response {
-            margin-top: 10px;
-            font-weight: bold;
-            text-align: center;
-        }
 
-        /* Bottom image */
-        .image-section {
-            flex: 1;
-            padding: 10px;
-            background: #f5f9ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+@*@Html.Partial("_Navbar")*@
 
-        .preview-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        }
-    </style>
-</head>
-<body>
+<div class="upload-wrapper">
+    @using (Html.BeginForm("ChargebackRawUploader", "Home",
+        FormMethod.Post,
+        new { enctype = "multipart/form-data", id = "excelForm" }))
+    {
 
-    <div class="fixed-page">
-
-        <!-- TOP SECTION -->
-        <div class="top-section">
-            <div class="upload-card">
-
-                <button class="btn btn-outline-primary btn-right" onclick="refresh()">
-                    <i class="bi bi-arrow-clockwise"></i>
-                </button>
-
-                <h2 class="title">Chargeback Raw Upload</h2>
-
-                @using (Html.BeginForm("ChargebackRawUploader", "Home", FormMethod.Post,
-                    new { id = "form", enctype = "multipart/form-data" }))
-                {
-                    <input type="date" id="date" name="UploadDate" />
-
-                    <div class="upload-box">
-                        <input type="file" name="file" id="file" />
-                        <span>Upload Excel File</span>
-                    </div>
-
-                    <button type="submit" id="load" class="btn-upload" disabled>
-                        <i class="bi bi-cloud-upload"></i> Upload Report
-                    </button>
-
-                    <div id="div_1" class="loader">
-                        <img src="~/wwwroot/Spinner.gif" width="40" height="40" />
-                        <span>Uploading, please wait...</span>
-                    </div>
-
-                    <p class="response" style="color:@ViewBag.Style;">
-                        @if (ViewBag.Style == "green")
-                        {
-                            <i class="bi bi-check-circle-fill"></i>
-                        }
-                        else if (ViewBag.Style == "red")
-                        {
-                            <i class="bi bi-x-circle-fill"></i>
-                        }
-                        @ViewBag.Message
-                    </p>
-                }
-
+        <div class="upload-header">
+            <h4 class="upload-title">&#128202; Chargebackraw Uploader</h4>
+            <div class="date-wrapper">
+                @*<input type="date" class="date-picker" id="date" name="date" />*@
+                <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
             </div>
         </div>
 
-        <!-- BOTTOM IMAGE SECTION -->
-        <div class="image-section">
-            <img src="~/wwwroot/ChargebackRaw.png"
-                 alt="Chargeback Raw Sample"
-                 class="preview-img" />
+        <div class="hint">
+            Only <strong>.xls,</strong> <strong>.csv</strong> and <strong>.xlsx</strong> files are allowed
         </div>
 
-    </div>
 
-    <script>
-        // Default date = yesterday
-        let d = new Date();
-        d.setDate(d.getDate() - 1);
-        document.getElementById("date").value =
-            d.getFullYear() + "-" +
-            String(d.getMonth() + 1).padStart(2, '0') + "-" +
-            String(d.getDate()).padStart(2, '0');
-    </script>
 
-    <script>
-        function refresh() {
-            window.location.reload();
+        <div class="file-grid">
+
+            <div class="file-row">
+                <label>Charge Back Uploader</label>
+                <input type="file" name="ChargeBackUploader" accept=".xls,.xlsx" />
+            </div>
+
+            @*<div class="file-row">
+                <label>MAPAR Historical Analysis</label>
+                <input type="file" name="MAPARHistoricalAnalysis" accept=".xls,.xlsx" />
+            </div>*@
+
+        </div>
+
+        <button type="submit" class="upload-btn" id="uploadBtn" disabled>Upload Files</button>
+    }
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="success-msg" style="white-space: pre-line">@ViewBag.Message</div>
+    }
+
+    @if (ViewBag.Success != null)
+    {
+        <div class="alert alert-success" style="white-space: pre-line">@ViewBag.Success</div>
+    }
+
+    @if (ViewBag.Warning != null)
+    {
+        <div class="alert alert-warning" style="white-space: pre-line">@ViewBag.Warning</div>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger fw-bold" style="white-space: pre-line">@ViewBag.Error</div>
+    }
+</div>
+
+<div id="loaderOverlay">
+    <div class="circle-loader"></div>
+</div>
+@*<div id="loader" style="display:block;">
+        <div class="spinner"></div>
+        <p>Uploading files... Please wait</p>
+    </div>*@
+
+<script>
+    document.getElementById("excelForm").addEventListener("submit", function () {
+
+        document.getElementById("loaderOverlay").style.display = "flex";
+
+        document.getElementById("uploadBtn").disabled = true;
+
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const uploadBtn = document.getElementById('uploadBtn');
+        const fileInputs = document.querySelectorAll('.file-grid input[type="file"]');
+
+        function toggleUpload() {
+            uploadBtn.disabled = !Array.from(fileInputs).some(f => f.files.length > 0);
         }
 
-        document.addEventListener('keydown', function (e) {
-            if (e.ctrlKey && e.key === '5') e.preventDefault();
-        });
-    </script>
+        fileInputs.forEach(input => input.addEventListener('change', toggleUpload));
 
-    <script>
-        $(function () {
-            $('#form').on('submit', function () {
-                $('#load').attr('disabled', true);
-                $('#div_1').show();
-            });
-        });
-    </script>
+    });
+</script>
 
-    <script>
-        document.getElementById('file').addEventListener('change', function () {
-            var filePath = this.value;
-            var allowedExtensions = /(\.xls|\.xlsx|\.csv)$/i;
+<script>
+    document.querySelectorAll('input[type="file"]').forEach(input => {
 
-            if (!allowedExtensions.exec(filePath)) {
-                alert('Please upload only Excel files (.xls or .xlsx or .csv).');
-                this.value = '';
-                return false;
+        input.addEventListener("change", function () {
+
+            const fileName = this.value;
+            const ext = fileName.split('.').pop().toLowerCase();
+
+            if (fileName && !["xls", "xlsx", "csv"].includes(ext)) {
+                alert("please upload excel files(.xls, .xlsx, csv)!");
+                this.value = "";
             }
-            $('#load').attr('disabled', false);
+
         });
 
-        document.getElementById('form').addEventListener('submit', function (e) {
-            var fileInput = document.getElementById('file');
-            if (!fileInput.value) {
-                alert("Please select an Excel file before submitting.");
-                e.preventDefault();
-                return false;
-            } else {
-                document.getElementById('div_1').style.display = 'none';
-            }
-        });
-    </script>
+    });
+</script>
 
-</body>
-</html>
+<script>
+    document.addEventListener("keydown", function (e) {
+        if (e.ctrlKey && e.key === "5") {
+            e.preventDefault();
+            window.location.href = window.location.pathname + "?v=" + Date.now();
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('keydown', function (e) {
+
+        // F5
+        if (e.key === 'F5') {
+            e.preventDefault();
+            location.reload(true);
+        }
+
+        // Ctrl + F5
+        if (e.ctrlKey && e.key === 'F5') {
+            e.preventDefault();
+            location.reload(true);
+        }
+
+    });
+</script>
+

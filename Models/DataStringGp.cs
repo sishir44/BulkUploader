@@ -934,6 +934,24 @@ namespace BulkUploader.Models
             }
         }
 
+        public static string ChargebackRawUpdateSTP(string date)
+        {
+            try
+            {
+                string status = "";
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "updateChargebackRaw";
+                DAL.SPParameters spParam = new DAL.SPParameters();
+                //spParam.SetParam("@DateParam", SqlDbType.VarChar, date);
+                status = objDal.AddData(spParam);
+                return status;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static string BudGetGoalUpdateSTP(string date)
         {
             try

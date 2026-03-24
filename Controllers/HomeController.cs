@@ -13,6 +13,7 @@ using System.Web.Mvc;
 using BulkUploader.Models;
 using OfficeOpenXml;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace BulkUploader.Controllers
 {
@@ -317,40 +318,77 @@ namespace BulkUploader.Controllers
             }
         }
 
+        [HttpGet]
+        [ValidateInput(false)]
         public ActionResult ChargebackRawUploader()
         {
-            global.userID = Request.QueryString["userid"];
-            global.decrpedUserId = EncryptionHelper.Decrypt(global.userID);
             return View();
         }
         [HttpPost]
-        public ActionResult ChargebackRawUploader(InventoryModel model)
+        public ActionResult ChargebackRawUploader(HttpPostedFileBase ChargeBackUploader, string date)
         {
             try
             {
-                string res = "Please Upload ChargebackRaw file";
-                if (model.File != null && model.File.FileName != null)
+                var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
                 {
-                    SaveFiles(model.File, "ChargebackRaw");
-                    model.Month = model.UploadDate;
-                    res = UploadFile(model.File, global.decrpedUserId, model.EmpID, model.Month, model.Year);
+
+                    { "ChargeBackUploader", (ChargeBackUploader,"Temp_ChargebackRaw") },
+                };
+                //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
+                var uploadedFiles = new List<string>();
+                var missingFiles = new List<string>();
+                string res = "";
+                string status = "";
+                foreach (var item in files)
+                {
+                    var file = item.Value.File;
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        SaveFiles(file);
+                        res = UploadToTable(file, item.Value.Table);
+                        if (res != "1")
+                        {
+                            //ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
+                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key + "\n" + res;
+                            continue;
+                        }
+                        uploadedFiles.Add(item.Key);
+                    }
+                    else
+                    {
+                        missingFiles.Add(item.Key);
+                    }
                 }
+                if (uploadedFiles.Any() && res != "" && res != null)
+                {
+                    ViewBag.Success = "Data Uploaded to temp table: " + string.Join(", ", uploadedFiles);
+                }
+                if (missingFiles.Any())
+                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
 
-                // ✅ ChargebackRaw returns a message string, not a row count
-                bool success = res != null && !res.StartsWith("Error") && !res.StartsWith("Following")
-                               && res != "Please Upload ChargebackRaw file";
-
-                ViewBag.Style = success ? "green" : "red";
-                ViewBag.Message = success ? "File uploaded successfully" : res;
-                return View();
+                if (res == "1")
+                {
+                    status = DataStringGp.ChargebackRawUpdateSTP(date);
+                    if (status == "1" || Convert.ToInt32(status) > 0)
+                    {
+                        ViewBag.Success = "Uploaded Successfully!";
+                    }
+                    else
+                    {
+                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                        ViewBag.Error = status;
+                    }
+                }
+                return View("ChargebackRawUploader");
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                ViewBag.Message = "File not Uploaded!";
-                ViewBag.Style = "red";
-                return View();
+                ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
+                return View("ChargebackRawUploader");
             }
         }
+        // =====================Fraud Transaction Raw Uploader End======== //
 
         //Excel Save file: Begin
         public void SaveFiles(HttpPostedFileBase file, string ReportName)
@@ -939,5 +977,294 @@ namespace BulkUploader.Controllers
             return res;
         }
         //Excel Upload file: End
+
+        public void SaveFiles(HttpPostedFileBase file)
+        {
+            try
+            {
+                if (file == null || file.ContentLength == 0)
+                    return;
+
+                string date = DateTime.Now.ToString("yyyyMMdd");
+                string dateTime = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+                // Create folder paths
+                string rootPath = Server.MapPath($"~/UploadedFiles/{date}");
+                string reportPath = Path.Combine(rootPath, file.FileName);
+
+                // Ensure directories exist
+                Directory.CreateDirectory(reportPath);
+
+                // Safe filename handling
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(file.FileName).Replace(" ", "");
+                string extension = Path.GetExtension(file.FileName);
+
+                string newFileName = $"{fileNameWithoutExt}_{dateTime}{extension}";
+
+                string fullPath = Path.Combine(reportPath, newFileName);
+
+                file.SaveAs(fullPath);
+            }
+            catch (Exception ex)
+            {
+                var st = new StackTrace(ex, true);
+                var frame = st.GetFrame(0);
+                string line = frame?.GetFileLineNumber().ToString();
+                Common.recorderror("BukhUploader/BulkUploaderController/SaveFiles", ex.Message, "", line);
+            }
+        }
+
+        // COMMON UPLOAD METHOD
+        // =============================
+        private string UploadToTable(HttpPostedFileBase file, string tableName)
+        {
+            if (file == null || file.ContentLength <= 0)
+                throw new Exception("File was not selected.");
+
+            DataTable dt;
+            string extension = Path.GetExtension(file.FileName).ToLower();
+
+            if (extension == ".csv")
+            {
+                dt = CsvToDataTable(file);
+                //CleanDataTable(dt);
+                //ValidateColumns(dt, tableName);
+            }
+            else
+            {
+                using (var package = new ExcelPackage(file.InputStream))
+                {
+                    var worksheet = package.Workbook.Worksheets[1];
+
+                     dt = ExcelHelper.ExcelToDataTable(worksheet);
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            if (row[col] == null || string.IsNullOrWhiteSpace(row[col].ToString()))
+                            {
+                                row[col] = DBNull.Value;
+                            }
+                            else
+                            {
+                                string value = row[col].ToString().Trim();
+
+                                // ✅ 1. Handle Scientific Notation (e.g., 5.56E+11)
+                                if (value.Contains("E") || value.Contains("e"))
+                                {
+                                    if (decimal.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal sciVal))
+                                    {
+                                        row[col] = sciVal;
+                                        continue;
+                                    }
+                                }
+
+                                // ✅ 2. Handle Currency, %, Parentheses
+                                if (Regex.IsMatch(value, @"^[\(\)\d\$\.,%]+$"))
+                                {
+                                    // Remove parentheses → ignoring negative sign
+                                    value = value.Replace("(", "").Replace(")", "");
+
+                                    // Remove symbols
+                                    value = value.Replace("$", "")
+                                                 .Replace(",", "")
+                                                 .Replace("%", "");
+
+                                    if (decimal.TryParse(value, out decimal num))
+                                    {
+                                        row[col] = num;
+                                    }
+                                    else
+                                    {
+                                        row[col] = value;
+                                    }
+                                }
+                                else
+                                {
+                                    // ✅ Keep non-numeric text unchanged
+                                    row[col] = value;
+                                }
+                            }
+                        }
+                    }
+
+                    return BulkInsert(dt, tableName);
+                }
+            }
+            return BulkInsert(dt, tableName);
+        }
+
+        private DataTable CsvToDataTable(HttpPostedFileBase file)
+        {
+            DataTable dt = new DataTable();
+
+            using (var reader = new StreamReader(file.InputStream))
+            {
+                bool isHeader = true;
+
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line))
+                        continue;
+
+                    var values = ParseCsvLine(line);
+                    if (isHeader)
+                    {
+                        foreach (var header in values)
+                        {
+                            dt.Columns.Add(header.Trim());
+                        }
+                        isHeader = false;
+                    }
+                    else
+                    {
+                        while (values.Count < dt.Columns.Count)
+                        {
+                            values.Add(null);
+                        }
+
+                        if (values.Count > dt.Columns.Count)
+                        {
+                            values = values.Take(dt.Columns.Count).ToList();
+                        }
+
+                        dt.Rows.Add(values.ToArray());
+                    }
+                }
+            }
+
+            return dt;
+        }        
+
+        // =============================
+        // BULK INSERT METHOD
+        // =============================
+        public string BulkInsert(DataTable dt, string tableName)
+        {
+            try
+            {
+                string conStr = ConfigurationManager.ConnectionStrings["APIConnStr"].ConnectionString;
+
+                using (SqlConnection con = new SqlConnection(conStr))
+                {
+                    con.Open();
+                    // 🔹 Step 1: Delete old records
+                    using (SqlCommand cmd = new SqlCommand($"DELETE FROM [{tableName}]", con))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    // 🔹 Step 2: Bulk insert new records
+                    using (SqlBulkCopy bulk = new SqlBulkCopy(con))
+                    {
+                        bulk.DestinationTableName = tableName;
+                        bulk.WriteToServer(dt);
+                    }
+                }
+                return "1";
+            }
+            catch (Exception ex)
+            {
+                return "Error has occured :  " + ex.Message;
+                //return "0";
+            }
+        }
+
+        private List<string> ParseCsvLine(string line)
+        {
+            var values = new List<string>();
+            bool inQuotes = false;
+            string current = "";
+
+            foreach (char c in line)
+            {
+                if (c == '"')
+                {
+                    inQuotes = !inQuotes;
+                }
+                else if (c == ',' && !inQuotes)
+                {
+                    values.Add(current);
+                    current = "";
+                }
+                else
+                {
+                    current += c;
+                }
+            }
+
+            values.Add(current);
+            return values;
+        }
+
+        //private void CleanDataTable(DataTable dt)
+        //{
+        //    foreach (DataRow row in dt.Rows)
+        //    {
+        //        foreach (DataColumn col in dt.Columns)
+        //        {
+        //            if (row[col] == null || string.IsNullOrWhiteSpace(row[col].ToString()))
+        //            {
+        //                row[col] = DBNull.Value;
+        //                continue;
+        //            }
+
+        //            string value = row[col].ToString().Trim();
+
+        //            // ✅ Detect negative (parentheses)
+        //            bool isNegative = value.Contains("(") && value.Contains(")");
+
+        //            value = value.Replace("(", "")
+        //                         .Replace(")", "")
+        //                         .Replace("$", "")
+        //                         .Replace(",", "")
+        //                         .Replace("%", "");
+
+        //            // ✅ Scientific notation
+        //            if (value.Contains("E") || value.Contains("e"))
+        //            {
+        //                if (decimal.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal sciVal))
+        //                {
+        //                    row[col] = sciVal.ToString("0");
+        //                    continue;
+        //                }
+        //            }
+
+        //            // ✅ Numeric conversion
+        //            if (decimal.TryParse(value, out decimal num))
+        //            {
+        //                row[col] = isNegative ? -num : num;
+        //            }
+        //            else
+        //            {
+        //                row[col] = value;
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private void ValidateColumns(DataTable dt, string tableName)
+        //{
+        //    using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["APIConnStr"].ConnectionString))
+        //    {
+        //        con.Open();
+
+        //        DataTable schema = con.GetSchema("Columns", new string[] { null, null, tableName });
+
+        //        var dbColumns = schema.AsEnumerable()
+        //                              .Select(r => r["COLUMN_NAME"].ToString().ToLower())
+        //                              .ToList();
+
+        //        foreach (DataColumn col in dt.Columns)
+        //        {
+        //            if (!dbColumns.Contains(col.ColumnName.ToLower()))
+        //            {
+        //                throw new Exception($"Column '{col.ColumnName}' does not exist in table '{tableName}'");
+        //            }
+        //        }
+        //    }
+        //}
+
     }
 }
