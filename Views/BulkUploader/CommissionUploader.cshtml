@@ -227,9 +227,15 @@
 
         <div class="upload-header">
             <h2 class="upload-title">&#128202; Commission Uploader</h2>
+            @*<div class="date-wrapper">
+            <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
+        </div>*@
             <div class="date-wrapper">
-                @*<input type="date" class="date-picker" id="date" name="date" />*@
-                <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
+                <!-- Month-Year Picker -->
+                <input type="month" class="date-picker" id="monthYearPicker" />
+
+                <!-- Hidden Full Date (what you already use) -->
+                <input type="hidden" id="date" name="date" />
             </div>
         </div>
 
@@ -438,3 +444,33 @@
     });
 </script>
 
+<script>
+    window.onload = function () {
+        // 👉 Get last day of previous month
+        var today = new Date();
+        var lastDayPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+
+        var year = lastDayPrevMonth.getFullYear();
+        var month = ("0" + (lastDayPrevMonth.getMonth() + 1)).slice(-2);
+        var day = ("0" + lastDayPrevMonth.getDate()).slice(-2);
+        // 👉 Set Month-Year picker (yyyy-MM)
+        document.getElementById("monthYearPicker").value = year + "-" + month;
+        // 👉 Set hidden field (yyyy-MM-dd)
+        document.getElementById("date").value = year + "-" + month + "-" + day;
+    };
+
+    // 👉 When user changes month
+    document.getElementById("monthYearPicker").addEventListener("change", function () {
+        var value = this.value; // yyyy-MM
+        if (value) {
+            var parts = value.split("-");
+            var year = parts[0];
+            var month = parts[1];
+
+            // 👉 Get last day of selected month
+            var lastDay = new Date(year, month, 0).getDate();
+            var fullDate = year + "-" + month + "-" + lastDay;
+            document.getElementById("date").value = fullDate;
+        }
+    });
+</script>
