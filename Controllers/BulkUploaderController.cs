@@ -343,6 +343,202 @@ namespace BulkUploader.Controllers
         // =====================Fraud Transaction Raw Uploader End======== //
 
 
+        [HttpGet]
+        [ValidateInput(false)]
+        public ActionResult MTDUploader()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult MTDUploader(
+            HttpPostedFileBase KPINational,
+            HttpPostedFileBase KPINational1,
+            HttpPostedFileBase MISLocation,
+            HttpPostedFileBase KPILocation1,
+            HttpPostedFileBase MTDNational1,
+            HttpPostedFileBase MTDNational2,
+            HttpPostedFileBase MTDLocation3,
+            HttpPostedFileBase MTDLocation4,
+            HttpPostedFileBase EmployeeRepData,
+            HttpPostedFileBase EmployeeDetailforTime,
+            HttpPostedFileBase ATTUIDDetailsMIS,
+            HttpPostedFileBase TATotalHoursSummary,
+            HttpPostedFileBase RepDataDayWise,
+            string date
+            )
+        {
+            try
+            {
+                var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
+                {
+
+                    { "KPINational", (KPINational, "Temp_Daily_MTD_KPINational") },
+                    { "KPINational1", (KPINational1,"Temp_Daily_MTD_KPINational1") },
+                    { "MISLocation", (MISLocation, "Temp_Daily_MTD_MISLocation") },
+                    { "KPILocation1", (KPILocation1,"Temp_Daily_MTD_KPILocation") },
+                    //{ "MISNational", (MISNational, "") },
+                    { "MTDNational1", (MTDNational1,"Temp_Daily_MTD_MTDNational1") },
+                    { "MTDNational2", (MTDNational2,"Temp_Daily_MTD_MTDNational2") },
+                    { "MTDLocation3", (MTDLocation3,"Temp_Daily_MTD_MTDLocation3") },
+                    { "MTDLocation4", (MTDLocation4,"Temp_Daily_MTD_MTDLocation4") },
+                    { "EmployeeRepData", (EmployeeRepData, "Temp_Daily_MTD_Repdata") },
+                    { "EmployeeDetailforTime", (EmployeeDetailforTime, "Temp_Daily_MTD_EmployeeDetailforTime") },
+                    { "ATTUIDDetailsMIS", (ATTUIDDetailsMIS, "Temp_Daily_others_ATTUID") },
+                    { "TATotalHoursSummary", (TATotalHoursSummary, "Temp_Daily_MTD_TotalHours") },
+                    { "RepDataDayWise", (RepDataDayWise, "Temp_Daily_MTD_RepdataDayWise") },
+                };
+                //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
+                var uploadedFiles = new List<string>();
+                var missingFiles = new List<string>();
+                string res = "";
+                string status = "";
+                foreach (var item in files)
+                {
+                    var file = item.Value.File;
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        SaveFiles(file);
+                        res = UploadToTable(file, item.Value.Table);
+                        if (res != "1")
+                        {
+                            //ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
+                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key + "\n" + res;
+                            continue;
+                        }
+                        uploadedFiles.Add(item.Key);
+                    }
+                    else
+                    {
+                        missingFiles.Add(item.Key);
+                    }
+                }
+
+                if (uploadedFiles.Any() && res != "" && res != null)
+                {
+                    ViewBag.Success = "Data Uploaded to temp table: " + string.Join(", ", uploadedFiles);
+                }
+
+                if (missingFiles.Any())
+                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
+
+                if (res == "1")
+                {
+                    status = DataStringGp.MTDUploaderUpdateSTP(date);
+                    if (status == "1")
+                    {
+                        ViewBag.Success = "Uploaded Successfully!";
+                    }
+                    else
+                    {
+                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                        ViewBag.Error = status;
+                    }
+                }
+
+                return View("MTDUploader");
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
+                return View("MTDUploader");
+                //ViewBag.Message = "Error: " + ex.Message;
+            }
+        }
+
+
+        [HttpGet]
+        [ValidateInput(false)]
+        public ActionResult DailyUploader()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult DailyUploader(
+        HttpPostedFileBase LeadsCalled,
+        HttpPostedFileBase Marketing,
+        HttpPostedFileBase RequisitionsTable,
+        HttpPostedFileBase Wiredraw,
+        HttpPostedFileBase Wirelessraw,
+        HttpPostedFileBase WirelessActivity,
+
+
+            string date
+            )
+        {
+            try
+            {
+                var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
+                {
+
+            
+                    { "LeadsCalled", (LeadsCalled, "Temp_Daily_others_Leadscalled") },
+                    { "Marketing", (Marketing, "Temp_Daily_others_Marketing") },
+                    { "RequisitionsTable", (RequisitionsTable, "Temp_Daily_others_Requisitions") },
+                    { "Wiredraw", (Wiredraw, "Temp_Daily_others_Wiredraw") },
+                    { "Wirelessraw", (Wirelessraw, "Temp_Daily_others_Wirelessraw") },
+                    { "WirelessActivity", (WirelessActivity, "Temp_Wirelessactivity") },
+                };
+                //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
+                var uploadedFiles = new List<string>();
+                var missingFiles = new List<string>();
+                string res = "";
+                string status = "";
+                foreach (var item in files)
+                {
+                    var file = item.Value.File;
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        SaveFiles(file);
+                        res = UploadToTable(file, item.Value.Table);
+                        if (res != "1")
+                        {
+                            //ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
+                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key + "\n" + res;
+                            continue;
+                        }
+                        uploadedFiles.Add(item.Key);
+                    }
+                    else
+                    {
+                        missingFiles.Add(item.Key);
+                    }
+                }
+
+                if (uploadedFiles.Any() && res != "" && res != null)
+                {
+                    ViewBag.Success = "Data Uploaded to temp table: " + string.Join(", ", uploadedFiles);
+                }
+
+                if (missingFiles.Any())
+                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
+
+                if (res == "1")
+                {
+                    status = DataStringGp.DailyUploaderUpdateSTP(date);
+                    if (status == "1")
+                    {
+                        ViewBag.Success = "Uploaded Successfully!";
+                    }
+                    else
+                    {
+                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                        ViewBag.Error = status;
+                    }
+                }
+
+                return View("DailyUploader");
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
+                return View("DailyUploader");
+                //ViewBag.Message = "Error: " + ex.Message;
+            }
+        }
+
+
         public void SaveFiles(HttpPostedFileBase file)
         {
             try

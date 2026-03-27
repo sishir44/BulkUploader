@@ -1,0 +1,415 @@
+@{
+    ViewBag.Title = "Daily Bulk Upload";
+}
+@{
+    ViewBag.DisableBulkyLink = true;
+}
+<meta charset="utf-8" />
+
+<style>
+    body {
+        background: linear-gradient(135deg, #eef2f7, #dfe9f3);
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .upload-wrapper {
+        width: 950px;
+        margin: 10px auto;
+        padding: 5px 10px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        margin-top: 50px;
+    }
+
+    .upload-title {
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: 500;
+        color: #2d89ef;
+        letter-spacing: 0.5px;
+    }
+
+    .file-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px 3px;
+    }
+
+    .file-row {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .file-row label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .file-row input[type=file] {
+            padding: 6px;
+            border: 1px dashed #b6c3d1;
+            border-radius: 6px;
+            background: #f8fbff;
+            cursor: pointer;
+        }
+
+            .file-row input[type=file].invalid {
+                border-color: #e74c3c;
+                background: #fff3f3;
+            }
+
+    .error-text {
+        font-size: 12px;
+        color: #e74c3c;
+        display: none;
+    }
+
+    .upload-btn {
+        width: 15%;
+        margin-top: 15px;
+        padding: 12px;
+        background: linear-gradient(135deg, #2d89ef, #1b5fa7);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-left: 35%;
+        margin-bottom: 8px;
+    }
+
+    .success-msg {
+        margin-top: 15px;
+        text-align: center;
+        font-weight: 600;
+        color: green;
+    }
+
+    .hint {
+        text-align: center;
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 12px;
+    }
+
+    .upload-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
+
+<style>
+    #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.8);
+        display: flex;
+        justify-content: center !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+        flex-direction: column;
+        z-index: 9999;
+    }
+
+    .spinner {
+        width: 80px;
+        height: 80px;
+        border: 6px solid #ddd;
+        border-top: 6px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        vertical-align: central !important;
+        text-align: center !important;
+    }
+
+    @@keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<style>
+    .upload-header {
+        position: relative;
+        text-align: center;
+        margin-bottom: 12px;
+    }
+
+    /* ----- DATE BOX ----- */
+    .date-wrapper {
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #A4E1F5;
+        padding: 6px 12px;
+        border-radius: 10px;
+        border: 1px solid #dcdcdc;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: 0.25s ease;
+    }
+
+        /* hover effect */
+        .date-wrapper:hover {
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
+
+    /* icon */
+    .date-icon {
+        font-size: 18px;
+    }
+
+    /* input style */
+    .date-picker {
+        border: none;
+        outline: none;
+        font-size: 14px;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    /* hint center */
+    .hint {
+        text-align: center;
+        color: #666;
+    }
+</style>
+
+<style>
+    #loaderOverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .circle-loader {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #007bff;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+
+@*@Html.Partial("_Navbar")*@
+
+<div class="upload-wrapper">
+    @using (Html.BeginForm("DailyUploader", "BulkUploader",
+        FormMethod.Post,
+        new { enctype = "multipart/form-data", id = "excelForm" }))
+    {
+
+        <div class="upload-header">
+            <h2 class="upload-title">&#128202; Daily Bulk Uploader</h2>
+            <div class="date-wrapper">
+                <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
+            </div>
+            <!--<div class="date-wrapper">-->
+                <!-- Month-Year Picker -->
+                <!--<input type="month" class="date-picker" id="monthYearPicker" />-->
+                <!-- Hidden Full Date (what you already use) -->
+                <!--<input type="hidden" id="date" name="date" />
+            </div>-->
+        </div>
+
+        <div class="hint">
+            Only <strong>.xls</strong> and <strong>.xlsx</strong> files are allowed
+        </div>
+
+
+
+        <div class="file-grid">
+
+            <div class="file-row">
+                <label>Leads Called </label>
+                <input type="file" name="LeadsCalled" accept=".xls,.xlsx" />
+            </div>
+
+
+            <div class="file-row">
+                <label>Marketing </label>
+                <input type="file" name="Marketing" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Requisitions Table</label>
+                <input type="file" name="RequisitionsTable" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Wiredraw </label>
+                <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Wirelessraw </label>
+                <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Wireless Activity </label>
+                <input type="file" name="WirelessActivity" accept=".xls,.xlsx" />
+            </div>
+        </div>
+
+        <button type="submit" class="upload-btn" id="uploadBtn" disabled>Upload Files</button>
+    }
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="success-msg" style="white-space: pre-line">@ViewBag.Message</div>
+    }
+
+    @if (ViewBag.Success != null)
+    {
+        <div class="alert alert-success" style="white-space: pre-line">@ViewBag.Success</div>
+    }
+
+    @if (ViewBag.Warning != null)
+    {
+        <div class="alert alert-warning" style="white-space: pre-line">@ViewBag.Warning</div>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger fw-bold" style="white-space: pre-line">@ViewBag.Error</div>
+    }
+</div>
+
+<div id="loaderOverlay">
+    <div class="circle-loader"></div>
+</div>
+@*<div id="loader" style="display:block;">
+        <div class="spinner"></div>
+        <p>Uploading files... Please wait</p>
+    </div>*@
+
+<script>
+    document.getElementById("excelForm").addEventListener("submit", function () {
+
+        document.getElementById("loaderOverlay").style.display = "flex";
+
+        document.getElementById("uploadBtn").disabled = true;
+
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const uploadBtn = document.getElementById('uploadBtn');
+        const fileInputs = document.querySelectorAll('.file-grid input[type="file"]');
+
+        function toggleUpload() {
+            uploadBtn.disabled = !Array.from(fileInputs).some(f => f.files.length > 0);
+        }
+
+        fileInputs.forEach(input => input.addEventListener('change', toggleUpload));
+
+    });
+</script>
+
+<script>
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+
+        input.addEventListener("change", function () {
+
+            const fileName = this.value;
+            const ext = fileName.split('.').pop().toLowerCase();
+
+            if (fileName && !["xls", "xlsx"].includes(ext)) {
+                alert("please upload excel files(.xls, .xlsx)!");
+                this.value = "";
+            }
+
+        });
+
+    });
+</script>
+
+<script>
+    document.addEventListener("keydown", function (e) {
+        if (e.ctrlKey && e.key === "5") {
+            e.preventDefault();
+            window.location.href = window.location.pathname + "?v=" + Date.now();
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('keydown', function (e) {
+
+        // F5
+        if (e.key === 'F5') {
+            e.preventDefault();
+            location.reload(true);
+        }
+
+        // Ctrl + F5
+        if (e.ctrlKey && e.key === 'F5') {
+            e.preventDefault();
+            location.reload(true);
+        }
+
+    });
+</script>
+
+<script>
+    //window.onload = function () {
+    //    // 👉 Get last day of previous month
+    //    var today = new Date();
+    //    var lastDayPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+
+    //    var year = lastDayPrevMonth.getFullYear();
+    //    var month = ("0" + (lastDayPrevMonth.getMonth() + 1)).slice(-2);
+    //    var day = ("0" + lastDayPrevMonth.getDate()).slice(-2);
+    //    // 👉 Set Month-Year picker (yyyy-MM)
+    //    document.getElementById("monthYearPicker").value = year + "-" + month;
+    //    // 👉 Set hidden field (yyyy-MM-dd)
+    //    document.getElementById("date").value = year + "-" + month + "-" + day;
+    //};
+
+    // 👉 When user changes month
+    //document.getElementById("monthYearPicker").addEventListener("change", function () {
+    //    var value = this.value; // yyyy-MM
+    //    if (value) {
+    //        var parts = value.split("-");
+    //        var year = parts[0];
+    //        var month = parts[1];
+
+    //        // 👉 Get last day of selected month
+    //        var lastDay = new Date(year, month, 0).getDate();
+    //        var fullDate = year + "-" + month + "-" + lastDay;
+    //        document.getElementById("date").value = fullDate;
+    //    }
+    //});
+</script>
