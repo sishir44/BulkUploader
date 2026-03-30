@@ -376,7 +376,6 @@ namespace BulkUploader.Controllers
                     { "KPINational1", (KPINational1,"Temp_Daily_MTD_KPINational1") },
                     { "MISLocation", (MISLocation, "Temp_Daily_MTD_MISLocation") },
                     { "KPILocation1", (KPILocation1,"Temp_Daily_MTD_KPILocation") },
-                    //{ "MISNational", (MISNational, "") },
                     { "MTDNational1", (MTDNational1,"Temp_Daily_MTD_MTDNational1") },
                     { "MTDNational2", (MTDNational2,"Temp_Daily_MTD_MTDNational2") },
                     { "MTDLocation3", (MTDLocation3,"Temp_Daily_MTD_MTDLocation3") },
@@ -455,14 +454,12 @@ namespace BulkUploader.Controllers
         }
         [HttpPost]
         public ActionResult DailyUploader(
-        HttpPostedFileBase LeadsCalled,
-        HttpPostedFileBase Marketing,
-        HttpPostedFileBase RequisitionsTable,
-        HttpPostedFileBase Wiredraw,
-        HttpPostedFileBase Wirelessraw,
-        HttpPostedFileBase WirelessActivity,
-
-
+            HttpPostedFileBase LeadsCalled,
+            HttpPostedFileBase Marketing,
+            HttpPostedFileBase RequisitionsTable,
+            HttpPostedFileBase Wiredraw,
+            HttpPostedFileBase Wirelessraw,
+            HttpPostedFileBase WirelessActivity,
             string date
             )
         {
@@ -494,7 +491,6 @@ namespace BulkUploader.Controllers
                         res = UploadToTable(file, item.Value.Table);
                         if (res != "1")
                         {
-                            //ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
                             ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key + "\n" + res;
                             continue;
                         }
