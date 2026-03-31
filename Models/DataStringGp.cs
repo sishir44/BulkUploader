@@ -877,7 +877,7 @@ namespace BulkUploader.Models
                 //DateTime InputDate = DateTime.Now.Date;
                 //string formattedDate = InputDate.ToString("yyyy-MM-dd");
                 DAL.DAL objDal = new DAL.DAL();
-                objDal.ProcName = "updateDaily_MTD";
+                objDal.ProcName = "UpdateDaily_MTD";
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
                 status = objDal.AddData(spParam);
@@ -904,11 +904,11 @@ namespace BulkUploader.Models
                 //DateTime InputDate = DateTime.Now.Date;
                 //string formattedDate = InputDate.ToString("yyyy-MM-dd");
                 DAL.DAL objDal = new DAL.DAL();
-                objDal.ProcName = "updateDaily_MTD";
+                objDal.ProcName = "UpdateDaily_MTD";
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
                 status = objDal.AddData(spParam);
-                if (status == "Operation was successful")
+                if (status == "Operation was successful" || Convert.ToInt32(status) > 1)
                 {
                     status = "1";
                 }
