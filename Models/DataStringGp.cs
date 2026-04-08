@@ -999,7 +999,7 @@ namespace BulkUploader.Models
                 DAL.DAL objDal = new DAL.DAL();
                 objDal.ProcName = "updateChargebackRaw";
                 DAL.SPParameters spParam = new DAL.SPParameters();
-                //spParam.SetParam("@DateParam", SqlDbType.VarChar, date);
+                spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
                 status = objDal.AddData(spParam);
                 return status;
             }
