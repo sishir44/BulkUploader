@@ -869,7 +869,7 @@ namespace BulkUploader.Models
             return dt;
         }
 
-        public static string UploaderUpdateSTP(string date)
+        public static string UploaderUpdateSTP(string date, string IsFinal)
         {
             try
             {
@@ -880,6 +880,7 @@ namespace BulkUploader.Models
                 objDal.ProcName = "UpdateDaily_MTD";
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
+                spParam.SetParam("@IsFinal", SqlDbType.VarChar, IsFinal);
                 status = objDal.AddData(spParam);
                 if(status == "Operation was successful")
                 {

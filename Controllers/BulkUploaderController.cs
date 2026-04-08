@@ -51,7 +51,8 @@ namespace BulkUploader.Controllers
             HttpPostedFileBase ATTUIDDetailsMIS,
             HttpPostedFileBase TATotalHoursSummary,
             HttpPostedFileBase RepDataDayWise,
-            string date
+            string date,
+            string IsFinal = "0"
             )
         {
             try
@@ -118,7 +119,7 @@ namespace BulkUploader.Controllers
 
                 if (res == "1")
                 {
-                    status = DataStringGp.UploaderUpdateSTP(date);
+                    status = DataStringGp.UploaderUpdateSTP(date, IsFinal);
                     if (status == "1")
                     {
                         ViewBag.Success = "Uploaded Successfully!";
