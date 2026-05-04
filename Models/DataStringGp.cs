@@ -1016,9 +1016,9 @@ namespace BulkUploader.Models
             {
                 string status = "";
                 DAL.DAL objDal = new DAL.DAL();
-                objDal.ProcName = "";
+                objDal.ProcName = "UpdateStoreGoals";
                 DAL.SPParameters spParam = new DAL.SPParameters();
-                spParam.SetParam("@DateParam", SqlDbType.VarChar, date);
+                spParam.SetParam("@Date", SqlDbType.VarChar, date);
                 status = objDal.AddData(spParam);
                 return status == "Operation was successful" ? "1" : status;
             }
