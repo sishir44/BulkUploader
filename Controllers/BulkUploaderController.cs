@@ -462,6 +462,8 @@ namespace BulkUploader.Controllers
             HttpPostedFileBase Wiredraw,
             HttpPostedFileBase Wirelessraw,
             HttpPostedFileBase WirelessActivity,
+            HttpPostedFileBase ChangeOrderInformation,
+            //HttpPostedFileBase DTSAllInformation,
             string date
             )
         {
@@ -477,6 +479,8 @@ namespace BulkUploader.Controllers
                     { "Wiredraw", (Wiredraw, "Temp_Daily_others_Wiredraw") },
                     { "Wirelessraw", (Wirelessraw, "Temp_Daily_others_Wirelessraw") },
                     { "WirelessActivity", (WirelessActivity, "Temp_Wirelessactivity") },
+                    { "ChangeOrderInformation", (ChangeOrderInformation, "Temp_ChangeOrderInformation") },
+                    //{ "DTSAllInformation", (DTSAllInformation, "Temp_DTSAllInformation") },
                 };
                 //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
                 var uploadedFiles = new List<string>();
@@ -515,7 +519,7 @@ namespace BulkUploader.Controllers
                 if (res == "1")
                 {
                     status = DataStringGp.DailyUploaderUpdateSTP(date);
-                    if (status == "1")
+                    if (status == "1" || Convert.ToInt32(status) > 0)
                     {
                         ViewBag.Success = "Uploaded Successfully!";
                     }
