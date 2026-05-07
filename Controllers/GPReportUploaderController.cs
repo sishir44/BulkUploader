@@ -70,7 +70,7 @@ namespace BulkUploader.Controllers
                 var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
             {
 
-                { "MobilyBudGet", (MobilyBudGet,"Temp_BudGetGoal") },
+                { "MobilyBudGet", (MobilyBudGet,"Temp_Goals") },
             };
                 var uploadedFiles = new List<string>();
                 var missingFiles = new List<string>();
