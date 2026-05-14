@@ -11,7 +11,7 @@ public class UserDAL : DAL
     public static UserModel Login(string Email, string passwordHash)
     {
         using (SqlConnection cn = new SqlConnection(strconnectionstring))
-        using (SqlCommand cmd = new SqlCommand("USP_USER_LOGIN", cn))
+        using (SqlCommand cmd = new SqlCommand("Get_User_Login", cn))
         {
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 50).Value = Email;
@@ -41,16 +41,22 @@ public class UserDAL : DAL
         try
         {
             using (SqlConnection cn = new SqlConnection(strconnectionstring))
-            using (SqlCommand cmd = new SqlCommand("USP_USER_REGISTER", cn))
+            using (SqlCommand cmd = new SqlCommand("Insert_User_Register", cn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("@Username", SqlDbType.NVarChar, 50).Value = model.Username;
                 cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value = model.Email;
                 cmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, 255).Value = passwordHash;
 
+                SqlParameter returnValue = new SqlParameter();
+                returnValue.Direction = ParameterDirection.ReturnValue;
+
+                cmd.Parameters.Add(returnValue);
+
                 cn.Open();
                 cmd.ExecuteNonQuery();
-                return true;
+                return Convert.ToInt32(returnValue.Value) == 1 ? true : false;
+                //return true;
             }
         }
         catch (SqlException)

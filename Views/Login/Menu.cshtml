@@ -1,0 +1,410 @@
+@*@{
+        ViewBag.Title = "Daily Bulk Upload";
+    }
+    @{
+        ViewBag.DisableBulkyLink = true;
+    }*@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<!-- jQuery (must come first) -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #eef2f7, #dfe9f3);
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .upload-wrapper {
+        width: 950px;
+        margin: 10px auto;
+        padding: 5px 10px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        margin-top: 50px;
+    }
+
+    .upload-title {
+        text-align: center;
+        margin-bottom: 10px;
+        font-weight: 500;
+        color: #053970;
+        letter-spacing: 0.5px;
+        font-weight:bold;
+    }
+
+    .file-grid {
+        margin-left:100px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2px 3px;
+    }
+
+    .file-row {
+        display: flex;
+        flex-direction: column;
+        margin-top:20px;
+        margin-bottom:50px;
+    }
+
+        .file-row label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .file-row input[type=file] {
+            padding: 6px;
+            border: 1px dashed #b6c3d1;
+            border-radius: 6px;
+            background: #f8fbff;
+            cursor: pointer;
+        }
+
+            .file-row input[type=file].invalid {
+                border-color: #e74c3c;
+                background: #fff3f3;
+            }
+
+    .error-text {
+        font-size: 12px;
+        color: #e74c3c;
+        display: none;
+    }
+
+    .upload-btn {
+        width: 15%;
+        margin-top: 15px;
+        padding: 12px;
+        background: linear-gradient(135deg, #2d89ef, #1b5fa7);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-left: 35%;
+        margin-bottom: 8px;
+    }
+
+    .success-msg {
+        margin-top: 15px;
+        text-align: center;
+        font-weight: 600;
+        color: green;
+    }
+
+    .hint {
+        text-align: center;
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 12px;
+    }
+
+    .upload-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
+
+<style>
+    #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.8);
+        display: flex;
+        justify-content: center !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+        flex-direction: column;
+        z-index: 9999;
+    }
+
+    .spinner {
+        width: 80px;
+        height: 80px;
+        border: 6px solid #ddd;
+        border-top: 6px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        vertical-align: central !important;
+        text-align: center !important;
+    }
+
+    @@keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<style>
+    
+
+    /* ----- DATE BOX ----- */
+    .date-wrapper {
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #A4E1F5;
+        padding: 6px 12px;
+        border-radius: 10px;
+        border: 1px solid #dcdcdc;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: 0.25s ease;
+    }
+
+        /* hover effect */
+        .date-wrapper:hover {
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
+
+    /* icon */
+    .date-icon {
+        font-size: 18px;
+    }
+
+    /* input style */
+    .date-picker {
+        border: none;
+        outline: none;
+        font-size: 14px;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    /* hint center */
+    .hint {
+        text-align: center;
+        color: #666;
+    }
+
+    .circle-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: none;
+        background: #0965C8;
+        color: white;
+        font-size: 22px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+        .circle-btn:hover {
+            background: green;
+        }
+
+
+    .upload-header {
+        position: relative;
+        text-align: center;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-left:35%;
+    }
+/*    .upload-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }*/
+
+    .btnLogInOut {
+        background: #27ADF5;
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+        .btnLogInOut:hover {
+            background: #8A0303;
+        }
+</style>
+
+<style>
+    #loaderOverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .circle-loader {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #007bff;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<div class="upload-header">
+    <h2 class="upload-title">&#x1F517; Bulk Uploader Menu</h2>
+    <button class="btnLogInOut" onclick="window.location.href='/'">LogOut</button>
+</div>
+
+<div class="upload-wrapper">
+
+    <div class="file-grid">
+
+        <div class="file-row">
+            <label class="uploader-label">Commission</label>
+            <button class="circle-btn" onclick="window.open('/BulkUploader/CommissionUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+
+        <div class="file-row">
+            <label class="uploader-label">DailyUploader</label>
+            <button class="circle-btn" onclick="window.open('/BulkUploader/DailyUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+
+        <div class="file-row">
+            <label class="uploader-label">FraudTransaction</label>
+            <button class="circle-btn" onclick="window.open('/BulkUploader/FraudTransactionUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+
+        <div class="file-row">
+            <label class="uploader-label">MTDUploader</label>
+            <button class="circle-btn" onclick="window.open('/BulkUploader/MTDUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+
+        <div class="file-row">
+            <label class="uploader-label">UploadExcel</label>
+            <button class="circle-btn" onclick="window.open('/BulkUploader/UploadExcel', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+
+        <div class="file-row">
+            <label class="uploader-label">BudGetGoal</label>
+            <button class="circle-btn" onclick="window.open('/GPReportUploader/BudGetGoalUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+
+        <div class="file-row">
+            <label class="uploader-label">GPUploader</label>
+            <button class="circle-btn" onclick="window.open('/GPReportUploader/GPUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+
+        <div class="file-row">
+            <label class="uploader-label">ChargebackRaw</label>
+            <button class="circle-btn" onclick="window.open('/Home/ChargebackRawUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+        <div class="file-row">
+            <label class="uploader-label">GPUploaderABO</label>
+            <button class="circle-btn" onclick="window.open('/Home/GPUploaderABO', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+        <div class="file-row">
+            <label class="uploader-label">P&LStatement</label>
+            <button class="circle-btn" onclick="window.open('/Home/Index', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+        <div class="file-row">
+            <label class="uploader-label">Inventory</label>
+            <button class="circle-btn" onclick="window.open('/Home/Inventoryuploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+        <div class="file-row">
+            <label class="uploader-label">KPIUploader</label>
+            <button class="circle-btn" onclick="window.open('/Home/KPIUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+        <div class="file-row">
+            <label class="uploader-label">PerformanceEvlSep</label>
+            <button class="circle-btn" onclick="window.open('/Home/PerformanceEvlSepUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+        <div class="file-row">
+            <label class="uploader-label">PerformanceEvl</label>
+            <button class="circle-btn" onclick="window.open('/Home/PerformanceEvlUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+        <div class="file-row">
+            <label class="uploader-label">USHRUploader</label>
+            <button class="circle-btn" onclick="window.open('/Home/USHRUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+        <div class="file-row">
+            <label class="uploader-label">WLActivity</label>
+            <button class="circle-btn" onclick="window.open('/Home/WirelessActivityUploader', '_blank')">
+                &#x1F517;
+            </button>
+        </div>
+
+
+
+    </div>
+</div>
+
+<script>
+$(function () {
+    @if (TempData["Success"] != null)
+    {
+        <text>toastr.success('@TempData["Success"]');</text>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <text>toastr.error('@TempData["Error"]');</text>
+    }
+});
+</script>

@@ -36,7 +36,7 @@ public class LoginController : Controller
 
             TempData["LoginSts"] = 1;
             TempData["Success"] = "Login successful";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Menu", "Login");
         }
         TempData["Error"] = "Invalid username or password";
         return View(model);
@@ -89,7 +89,6 @@ public class LoginController : Controller
     }
 
 
-
     public ActionResult ForgotPassword()
     {
         return View();
@@ -100,6 +99,12 @@ public class LoginController : Controller
     {
         // check email in DB
         ViewBag.Message = "If this email exists, a reset link has been sent.";
+        return View();
+    }
+
+    [HttpGet]
+    public ActionResult Menu()
+    {
         return View();
     }
 

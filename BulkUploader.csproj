@@ -355,6 +355,7 @@
     <Content Include="Views\GPReportUploader\BudGetGoalUploader.cshtml" />
     <Content Include="Views\BulkUploader\MTDUploader.cshtml" />
     <Content Include="Views\BulkUploader\DailyUploader.cshtml" />
+    <Content Include="Views\Login\Menu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\" />

@@ -581,69 +581,73 @@ namespace BulkUploader.Controllers
         // =============================
         private string UploadToTable(HttpPostedFileBase file, string tableName)
         {
-            if (file == null || file.ContentLength <= 0)
+            try
             {
-                throw new Exception("File was not selected.");
-            }
-
-            using (var package = new ExcelPackage(file.InputStream))
-            {
-                var worksheet = package.Workbook.Worksheets[1];
-
-                DataTable dt = ExcelHelper.ExcelToDataTable(worksheet);
-
-                foreach (DataRow row in dt.Rows)
+                if (file == null || file.ContentLength <= 0)
                 {
-                    foreach (DataColumn col in dt.Columns)
+                    throw new Exception("File was not selected.");
+                }
+
+                using (var package = new ExcelPackage(file.InputStream))
+                {
+                    var worksheet = package.Workbook.Worksheets[1];
+
+                    DataTable dt = ExcelHelper.ExcelToDataTable(worksheet);
+
+                    foreach (DataRow row in dt.Rows)
                     {
-                        if (row[col] == null || string.IsNullOrWhiteSpace(row[col].ToString()))
+                        foreach (DataColumn col in dt.Columns)
                         {
-                            row[col] = DBNull.Value;
-                        }
-                        else
-                        {
-                            string value = row[col].ToString().Trim();
-
-                            // ✅ 1. Handle Scientific Notation (e.g., 5.56E+11)
-                            if (value.Contains("E") || value.Contains("e"))
+                            if (row[col] == null || string.IsNullOrWhiteSpace(row[col].ToString()))
                             {
-                                if (decimal.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal sciVal))
-                                {
-                                    row[col] = sciVal;
-                                    continue;
-                                }
+                                row[col] = DBNull.Value;
                             }
-
-                            // ✅ 2. Handle Currency, %, Parentheses
-                            if (Regex.IsMatch(value, @"^[\(\)\d\$\.,%]+$"))
+                            else
                             {
-                                // Remove parentheses → ignoring negative sign
-                                value = value.Replace("(", "").Replace(")", "");
+                                string value = row[col].ToString().Trim();
 
-                                // Remove symbols
-                                value = value.Replace("$", "")
-                                             .Replace(",", "")
-                                             .Replace("%", "");
-
-                                if (decimal.TryParse(value, out decimal num))
+                                // Scientific notation
+                                if (value.Contains("E") || value.Contains("e"))
                                 {
-                                    row[col] = num;
+                                    if (decimal.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal sciVal))
+                                    {
+                                        row[col] = sciVal;
+                                        continue;
+                                    }
+                                }
+
+                                // Currency, %, commas
+                                if (Regex.IsMatch(value, @"^[\(\)\d\$\.,%]+$"))
+                                {
+                                    value = value.Replace("(", "")
+                                                 .Replace(")", "")
+                                                 .Replace("$", "")
+                                                 .Replace(",", "")
+                                                 .Replace("%", "");
+
+                                    if (decimal.TryParse(value, out decimal num))
+                                    {
+                                        row[col] = num;
+                                    }
+                                    else
+                                    {
+                                        row[col] = value;
+                                    }
                                 }
                                 else
                                 {
                                     row[col] = value;
                                 }
                             }
-                            else
-                            {
-                                // ✅ Keep non-numeric text unchanged
-                                row[col] = value;
-                            }
                         }
                     }
-                }
 
-                return BulkInsert(dt, tableName);
+                    return BulkInsert(dt, tableName);
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
             }
         }
 
