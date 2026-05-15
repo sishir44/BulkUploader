@@ -1,5 +1,5 @@
 @{
-    ViewBag.Title = "Wire Draw Uploader";
+    ViewBag.Title = "Wired Raw Uploader";
 }
 @{
     ViewBag.DisableBulkyLink = true;
@@ -29,6 +29,7 @@
         font-weight: 500;
         color: #2d89ef;
         letter-spacing: 0.5px;
+        margin-left:-50px;
     }
 
     .file-grid {
@@ -233,7 +234,7 @@
     {
 
         <div class="upload-header">
-            <h2 class="upload-title">&#128202; Wire Draw Uploader </h2>
+            <h2 class="upload-title">&#128202; Wired Raw Uploader </h2>
             <div class="date-wrapper">
                 <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
             </div>
@@ -254,7 +255,7 @@
         <div class="file-grid">
 
             <div class="file-row">
-                <label>Wire Draw Uploader </label>
+                <label>Wired Raw Uploader </label>
                 <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
             </div>
 

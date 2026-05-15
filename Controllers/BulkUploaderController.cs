@@ -607,12 +607,12 @@ namespace BulkUploader.Controllers
                     }
                 }
 
-                return View("DailyUploader");
+                return View("WireDrawUploader");
             }
             catch (System.Exception ex)
             {
                 ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
-                return View("DailyUploader");
+                return View("WireDrawUploader");
                 //ViewBag.Message = "Error: " + ex.Message;
             }
         }
@@ -683,12 +683,12 @@ namespace BulkUploader.Controllers
                     }
                 }
 
-                return View("DailyUploader");
+                return View("WirelessrawUploader");
             }
             catch (System.Exception ex)
             {
                 ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
-                return View("DailyUploader");
+                return View("WirelessrawUploader");
                 //ViewBag.Message = "Error: " + ex.Message;
             }
         }
@@ -759,12 +759,12 @@ namespace BulkUploader.Controllers
                     }
                 }
 
-                return View("DailyUploader");
+                return View("WirelessActivityUploader");
             }
             catch (System.Exception ex)
             {
                 ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
-                return View("DailyUploader");
+                return View("WirelessActivityUploader");
                 //ViewBag.Message = "Error: " + ex.Message;
             }
         }
