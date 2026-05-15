@@ -356,6 +356,9 @@
     <Content Include="Views\BulkUploader\MTDUploader.cshtml" />
     <Content Include="Views\BulkUploader\DailyUploader.cshtml" />
     <Content Include="Views\Login\Menu.cshtml" />
+    <Content Include="Views\BulkUploader\WireDrawUploader.cshtml" />
+    <Content Include="Views\BulkUploader\WirelessrawUploader.cshtml" />
+    <Content Include="Views\BulkUploader\WirelessActivityUploader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\" />

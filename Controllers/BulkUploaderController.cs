@@ -541,6 +541,233 @@ namespace BulkUploader.Controllers
         }
 
 
+        [HttpGet]
+        [ValidateInput(false)]
+        public ActionResult WireDrawUploader()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult WireDrawUploader(
+            HttpPostedFileBase Wiredraw,
+            string date
+            )
+        {
+            try
+            {
+                var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
+                {
+                    { "Wiredraw", (Wiredraw, "Temp_Daily_others_Wiredraw") },
+                };
+                //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
+                var uploadedFiles = new List<string>();
+                var missingFiles = new List<string>();
+                string res = "";
+                string status = "";
+                foreach (var item in files)
+                {
+                    var file = item.Value.File;
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        SaveFiles(file);
+                        res = UploadToTable(file, item.Value.Table);
+                        if (res != "1")
+                        {
+                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key + "\n" + res;
+                            continue;
+                        }
+                        uploadedFiles.Add(item.Key);
+                    }
+                    else
+                    {
+                        missingFiles.Add(item.Key);
+                    }
+                }
+
+                if (uploadedFiles.Any() && res != "" && res != null)
+                {
+                    ViewBag.Success = "Data Uploaded to temp table: " + string.Join(", ", uploadedFiles);
+                }
+
+                if (missingFiles.Any())
+                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
+
+                if (res == "1")
+                {
+                    status = DataStringGp.WiredrawUpdateSTP(date);
+                    if (status == "1" || Convert.ToInt32(status) > 0)
+                    {
+                        ViewBag.Success = "Uploaded Successfully!";
+                    }
+                    else
+                    {
+                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                        ViewBag.Error = status;
+                    }
+                }
+
+                return View("DailyUploader");
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
+                return View("DailyUploader");
+                //ViewBag.Message = "Error: " + ex.Message;
+            }
+        }
+
+        [HttpGet]
+        [ValidateInput(false)]
+        public ActionResult WirelessrawUploader()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult WirelessrawUploader(
+            HttpPostedFileBase Wirelessraw,
+            string date
+            )
+        {
+            try
+            {
+                var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
+                {
+                    { "Wirelessraw", (Wirelessraw, "Temp_Daily_others_Wirelessraw") },
+                };
+                //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
+                var uploadedFiles = new List<string>();
+                var missingFiles = new List<string>();
+                string res = "";
+                string status = "";
+                foreach (var item in files)
+                {
+                    var file = item.Value.File;
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        SaveFiles(file);
+                        res = UploadToTable(file, item.Value.Table);
+                        if (res != "1")
+                        {
+                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key + "\n" + res;
+                            continue;
+                        }
+                        uploadedFiles.Add(item.Key);
+                    }
+                    else
+                    {
+                        missingFiles.Add(item.Key);
+                    }
+                }
+
+                if (uploadedFiles.Any() && res != "" && res != null)
+                {
+                    ViewBag.Success = "Data Uploaded to temp table: " + string.Join(", ", uploadedFiles);
+                }
+
+                if (missingFiles.Any())
+                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
+
+                if (res == "1")
+                {
+                    status = DataStringGp.WirelessRawUpdateSTP(date);
+                    if (status == "1" || Convert.ToInt32(status) > 0)
+                    {
+                        ViewBag.Success = "Uploaded Successfully!";
+                    }
+                    else
+                    {
+                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                        ViewBag.Error = status;
+                    }
+                }
+
+                return View("DailyUploader");
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
+                return View("DailyUploader");
+                //ViewBag.Message = "Error: " + ex.Message;
+            }
+        }
+
+        [HttpGet]
+        [ValidateInput(false)]
+        public ActionResult WirelessActivityUploader()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult WirelessActivityUploader(
+            HttpPostedFileBase WirelessActivity,
+            string date
+            )
+        {
+            try
+            {
+                var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
+                {
+                    { "WirelessActivity", (WirelessActivity, "Temp_Wirelessactivity") },
+                };
+                //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
+                var uploadedFiles = new List<string>();
+                var missingFiles = new List<string>();
+                string res = "";
+                string status = "";
+                foreach (var item in files)
+                {
+                    var file = item.Value.File;
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        SaveFiles(file);
+                        res = UploadToTable(file, item.Value.Table);
+                        if (res != "1")
+                        {
+                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key + "\n" + res;
+                            continue;
+                        }
+                        uploadedFiles.Add(item.Key);
+                    }
+                    else
+                    {
+                        missingFiles.Add(item.Key);
+                    }
+                }
+
+                if (uploadedFiles.Any() && res != "" && res != null)
+                {
+                    ViewBag.Success = "Data Uploaded to temp table: " + string.Join(", ", uploadedFiles);
+                }
+
+                if (missingFiles.Any())
+                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
+
+                if (res == "1")
+                {
+                    status = DataStringGp.WirelessActivityUpdateSTP(date);
+                    if (status == "1" || Convert.ToInt32(status) > 0)
+                    {
+                        ViewBag.Success = "Uploaded Successfully!";
+                    }
+                    else
+                    {
+                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                        ViewBag.Error = status;
+                    }
+                }
+
+                return View("DailyUploader");
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
+                return View("DailyUploader");
+                //ViewBag.Message = "Error: " + ex.Message;
+            }
+        }
         public void SaveFiles(HttpPostedFileBase file)
         {
             try

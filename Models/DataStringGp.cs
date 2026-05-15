@@ -954,6 +954,89 @@ namespace BulkUploader.Models
             }
         }
 
+        public static string WiredrawUpdateSTP(string date)
+        {
+            try
+            {
+                string status = "";
+                //DateTime InputDate = DateTime.Now.Date;
+                //string formattedDate = InputDate.ToString("yyyy-MM-dd");
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "Update_Fct_My_Wiredrawonly";
+                DAL.SPParameters spParam = new DAL.SPParameters();
+                spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
+                status = objDal.AddData(spParam);
+                if (status == "Operation was successful")
+                {
+                    status = "1";
+                }
+                else
+                {
+                    status = status;
+                }
+                return status;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public static string WirelessRawUpdateSTP(string date)
+        {
+            try
+            {
+                string status = "";
+                //DateTime InputDate = DateTime.Now.Date;
+                //string formattedDate = InputDate.ToString("yyyy-MM-dd");
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "Update_Fct_My_Wirelessrawonly";
+                DAL.SPParameters spParam = new DAL.SPParameters();
+                spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
+                status = objDal.AddData(spParam);
+                if (status == "Operation was successful")
+                {
+                    status = "1";
+                }
+                else
+                {
+                    status = status;
+                }
+                return status;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static string WirelessActivityUpdateSTP(string date)
+        {
+            try
+            {
+                string status = "";
+                //DateTime InputDate = DateTime.Now.Date;
+                //string formattedDate = InputDate.ToString("yyyy-MM-dd");
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "Update_Fct_My_MTDWirelessactivityonly";
+                DAL.SPParameters spParam = new DAL.SPParameters();
+                spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
+                status = objDal.AddData(spParam);
+                if (status == "Operation was successful")
+                {
+                    status = "1";
+                }
+                else
+                {
+                    status = status;
+                }
+                return status;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static string CommissionUpdateSTP(string date)
         {
             try
