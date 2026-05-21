@@ -182,7 +182,8 @@ namespace BulkUploader.Controllers
             //HttpPostedFileBase InventoryShrink,
             HttpPostedFileBase RLONotReceived,
             HttpPostedFileBase SerializedSold,
-            HttpPostedFileBase Shrink,
+            HttpPostedFileBase Shrink1,
+            HttpPostedFileBase Shrink2,
             HttpPostedFileBase TradeIns,
             HttpPostedFileBase Treasury,
             HttpPostedFileBase WirelessBillCreds,
@@ -207,7 +208,8 @@ namespace BulkUploader.Controllers
                         { "Returns", (Returns,"Temp_Returns") },
                         { "RLONotReceived", (RLONotReceived,"Temp_RLONotRecieved") },
                         { "SerializedSold", (SerializedSold,"Temp_SerializedSold") },
-                        { "Shrink", (Shrink,"Temp_Shrink") },
+                        { "Shrink1", (Shrink1,"Temp_Shrink1") },
+                        { "Shrink2", (Shrink2,"Temp_Shrink2") },
                         { "TradeIns", (TradeIns,"temp_tradein") },
                         { "Treasury", (Treasury,"temp_treasury") },
                         { "WirelessBillCreds", (WirelessBillCreds,"Temp_WirelessBillCreds") },
@@ -249,13 +251,21 @@ namespace BulkUploader.Controllers
                 if (res == "1")
                 {
                     status = DataStringGp.CommissionUpdateSTP(date);
-                    if (status == "1" || Convert.ToInt32(status) > 0)
+                    //if (status == "1" || Convert.ToInt32(status) > 0)
+                    //{
+                    //    ViewBag.Success = "Uploaded Successfully!";
+                    //}
+                    //else
+                    //{
+                    //    //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                    //    ViewBag.Error = status;
+                    //}
+                    if (status == "1" || (int.TryParse(status, out int result) && result > 0))
                     {
                         ViewBag.Success = "Uploaded Successfully!";
                     }
                     else
                     {
-                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
                         ViewBag.Error = status;
                     }
                 }
@@ -596,13 +606,21 @@ namespace BulkUploader.Controllers
                 if (res == "1")
                 {
                     status = DataStringGp.WiredrawUpdateSTP(date);
-                    if (status == "1" || Convert.ToInt32(status) > 0)
+                    //if (status == "1" || Convert.ToInt32(status) > 0)
+                    //{
+                    //    ViewBag.Success = "Uploaded Successfully!";
+                    //}
+                    //else
+                    //{
+                    //    //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                    //    ViewBag.Error = status;
+                    //}
+                    if (status == "1" || (int.TryParse(status, out int result) && result > 0))
                     {
                         ViewBag.Success = "Uploaded Successfully!";
                     }
                     else
                     {
-                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
                         ViewBag.Error = status;
                     }
                 }
