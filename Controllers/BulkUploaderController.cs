@@ -603,6 +603,7 @@ namespace BulkUploader.Controllers
                 if (missingFiles.Any())
                     ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
 
+
                 if (res == "1")
                 {
                     status = DataStringGp.WiredrawUpdateSTP(date);
