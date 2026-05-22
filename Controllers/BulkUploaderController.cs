@@ -187,7 +187,7 @@ namespace BulkUploader.Controllers
             HttpPostedFileBase TradeIns,
             HttpPostedFileBase Treasury,
             HttpPostedFileBase WirelessBillCreds,
-            HttpPostedFileBase ProfitLossStatement,
+            //HttpPostedFileBase ProfitLossStatement,
             string date
             )
         {
@@ -213,7 +213,7 @@ namespace BulkUploader.Controllers
                         { "TradeIns", (TradeIns,"temp_tradein") },
                         { "Treasury", (Treasury,"temp_treasury") },
                         { "WirelessBillCreds", (WirelessBillCreds,"Temp_WirelessBillCreds") },
-                        { "ProfitLossStatement", (ProfitLossStatement,"Temp_ProfitLossStatement") },
+                        //{ "ProfitLossStatement", (ProfitLossStatement,"Temp_ProfitLossStatement") },
                     };
                 //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
                 var uploadedFiles = new List<string>();
