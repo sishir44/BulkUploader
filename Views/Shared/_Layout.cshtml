@@ -9,29 +9,12 @@
     <link rel="icon" href="data:image/svg+xml,
     <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
         <circle cx='50' cy='50' r='48' fill='%230033a0' />
-        <text x='50%' y='70%' text-anchor='middle'
-              font-size='70' fill='yellow'>🔗</text>
+        <text x='50%' y='70%' text-anchor='middle'font-size='70' fill='yellow'>🔗</text>
     </svg>">
-
 
 </head>
 <body>
-    <!--<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-        <div class="container">
-      
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>-->
-            @*<div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-            <ul class="navbar-nav flex-grow-1">
-                <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-            </ul>
-        </div>*@
-        <!--</div>
-    </nav>-->
+    @Html.Partial("_SessionExpire")
     <div class="container body-content">
         @RenderBody()
         <hr />
@@ -43,20 +26,5 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
-
-
-    <script>
-    @*$(function () {
-        @if (TempData["Success"] != null)
-        {
-            <text>toastr.success('@TempData["Success"]');</text>
-        }
-        @if (TempData["Error"] != null)
-        {
-            <text>toastr.error('@TempData["Error"]');</text>
-        }
-    });*@
-    </script>
-
 </body>
 </html>

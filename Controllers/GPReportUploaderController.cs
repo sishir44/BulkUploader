@@ -16,7 +16,7 @@ using System.Text.RegularExpressions;
 
 namespace BulkUploader.Controllers
 {
-    public class GPReportUploaderController : Controller
+    public class GPReportUploaderController : BaseController
     {
         DataTable GPReportUploader_Dt;
         DataTable Callidus_Dt;
@@ -25,6 +25,8 @@ namespace BulkUploader.Controllers
         public string Date = "";
         public string CheckBackDateReport = "";
 
+        [HttpGet]
+        [OverrideAuthentication]
         public ActionResult GPUploader()
         {
             return View();
@@ -58,6 +60,7 @@ namespace BulkUploader.Controllers
 
         [HttpGet]
         [ValidateInput(false)]
+        [OverrideAuthentication]
         public ActionResult BudGetGoalUploader()
         {
             return View();
@@ -282,7 +285,6 @@ namespace BulkUploader.Controllers
             }
             return res;
         }
-
 
         /* New */
         public void SaveFile(HttpPostedFileBase file)

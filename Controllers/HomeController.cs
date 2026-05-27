@@ -17,7 +17,7 @@ using System.Globalization;
 
 namespace BulkUploader.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         DataTable DataTbl;
         DataTable Callidus_Dt;
@@ -26,6 +26,8 @@ namespace BulkUploader.Controllers
         public string Date = "";
         public string CheckBackDateReport = "";
 
+        [HttpGet]
+        [OverrideAuthentication]
         public ActionResult Index()
         {
             return View();
@@ -54,7 +56,9 @@ namespace BulkUploader.Controllers
                 return View();
             }
         }
-        
+
+        [HttpGet]
+        [OverrideAuthentication]
         public ActionResult GPUploaderABO()
         {
             return View();
@@ -82,6 +86,8 @@ namespace BulkUploader.Controllers
             }
         }
 
+        [HttpGet]
+        [OverrideAuthentication]
         public ActionResult PerformanceEvlUploader()
         {
             global.userID = Request.QueryString["userid"];
@@ -126,7 +132,9 @@ namespace BulkUploader.Controllers
                 return View();
             }
         }
-        
+
+        [HttpGet]
+        [OverrideAuthentication]
         public ActionResult PerformanceEvlSepUploader()
         {
             global.userID = Request.QueryString["userid"];
@@ -171,7 +179,9 @@ namespace BulkUploader.Controllers
                 return View();
             }
         }
-        
+
+        [HttpGet]
+        [OverrideAuthentication]
         public ActionResult Inventoryuploader()
         {
             global.userID = Request.QueryString["userid"];
@@ -210,6 +220,8 @@ namespace BulkUploader.Controllers
             }
         }
 
+        [HttpGet]
+        [OverrideAuthentication]
         public ActionResult USHRUploader()
         {
             global.userID = Request.QueryString["userid"];
@@ -242,6 +254,8 @@ namespace BulkUploader.Controllers
             }
         }
 
+        [HttpGet]
+        [OverrideAuthentication]
         public ActionResult KPIUploader()
         {
             global.userID = Request.QueryString["userid"];
@@ -280,6 +294,8 @@ namespace BulkUploader.Controllers
             }
         }
 
+        [HttpGet]
+        [OverrideAuthentication]
         public ActionResult WirelessActivityUploader()
         {
             global.userID = Request.QueryString["userid"];
@@ -320,6 +336,7 @@ namespace BulkUploader.Controllers
 
         [HttpGet]
         [ValidateInput(false)]
+        [OverrideAuthentication]
         public ActionResult ChargebackRawUploader()
         {
             return View();

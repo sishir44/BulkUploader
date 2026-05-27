@@ -4,10 +4,21 @@ using System.Web.Mvc;
 using BulkUploader.Models;
 using BulkUploader.DAL;
 
-public class LoginController : Controller
+public class LoginController : BaseController
 {
-    public ActionResult Login()
+    public JsonResult CheckSession()
     {
+        bool sessionExpired = Session["Email"] == null;
+
+        return Json(new
+        {
+            sessionExpired = sessionExpired
+        }, JsonRequestBehavior.AllowGet);
+    }
+    [HttpGet]
+    public ActionResult Login(bool? sessionExpired)
+    {
+        ViewBag.SessionExpired = sessionExpired;
         return View();
     }
 
@@ -103,6 +114,7 @@ public class LoginController : Controller
     }
 
     [HttpGet]
+    [OverrideAuthentication]
     public ActionResult Menu()
     {
         return View();

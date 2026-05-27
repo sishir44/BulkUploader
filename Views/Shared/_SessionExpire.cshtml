@@ -1,0 +1,51 @@
+<div id="sessionModal" class="session-modal">
+    <div class="session-box">
+        <h3>Session Expired</h3>
+        <p>Please login again.</p>
+
+        <button onclick="redirectLogin()">
+            Login
+        </button>
+    </div>
+</div>
+
+<style>
+
+    .session-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .session-box {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        text-align: center;
+        width: 300px;
+    }
+
+        .session-box button {
+            background: red;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+</style>
+
+<script>
+
+    setTimeout(function () {
+        document.getElementById("sessionModal").style.display = "flex";
+    }, 1800000);
+
+    function redirectLogin() {
+        window.location.href = '@Url.Action("Login", "Login")';
+    }
+
+</script>

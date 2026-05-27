@@ -16,7 +16,8 @@ public class BaseController : Controller
         }
 
         // Session expired → redirect
-        if (Session["UserId"] == null)
+        //if (Session["UserId"] == null)
+        if (Session["Email"] == null)
         {
             filterContext.Result = new RedirectToRouteResult(
                 new RouteValueDictionary(

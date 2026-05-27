@@ -1,9 +1,7 @@
 ﻿@{
     ViewBag.Title = "Upload USHR Data";
-    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-
 
 <!DOCTYPE html>
 <html>
@@ -35,20 +33,21 @@
         .wrapper {
             height: 100%;
             display: flex;
-            /*justify-content: center;
-            align-items: center;*/
+            justify-content: center;
+            align-items: center;
             flex-direction: column;
+            width: 100%;
         }
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 1000px;
             background-color: #fff;
             padding: 30px 40px;
             border-radius: 10px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             text-align: center;
-            margin-left: 30%;
+            /*margin-left: 30%;*/
         }
 
         h2 {

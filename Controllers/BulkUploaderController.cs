@@ -19,11 +19,12 @@ using System.Globalization;
 
 namespace BulkUploader.Controllers
 {
-    public class BulkUploaderController : Controller
+    public class BulkUploaderController : BaseController
     {
         // =====================UploadExcel Uploader Start======== //
         [HttpGet]
         [ValidateInput(false)]
+        [OverrideAuthentication]
         public ActionResult UploadExcel()
         {
             return View();
@@ -160,6 +161,7 @@ namespace BulkUploader.Controllers
         // =====================Commission Uploader Start======== //
         [HttpGet]
         [ValidateInput(false)]
+        [OverrideAuthentication]
         public ActionResult CommissionUploader()
         {
             return View();
@@ -356,6 +358,7 @@ namespace BulkUploader.Controllers
 
         [HttpGet]
         [ValidateInput(false)]
+        [OverrideAuthentication]
         public ActionResult MTDUploader()
         {
             return View();
@@ -460,6 +463,7 @@ namespace BulkUploader.Controllers
 
         [HttpGet]
         [ValidateInput(false)]
+        [OverrideAuthentication]
         public ActionResult DailyUploader()
         {
             return View();
@@ -553,6 +557,7 @@ namespace BulkUploader.Controllers
 
         [HttpGet]
         [ValidateInput(false)]
+        [OverrideAuthentication]
         public ActionResult WireDrawUploader()
         {
             return View();
@@ -638,6 +643,7 @@ namespace BulkUploader.Controllers
 
         [HttpGet]
         [ValidateInput(false)]
+        [OverrideAuthentication]
         public ActionResult WirelessrawUploader()
         {
             return View();
@@ -714,6 +720,7 @@ namespace BulkUploader.Controllers
 
         [HttpGet]
         [ValidateInput(false)]
+        [OverrideAuthentication]
         public ActionResult WirelessActivityUploader()
         {
             return View();

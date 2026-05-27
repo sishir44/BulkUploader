@@ -4,6 +4,9 @@
     @{
         ViewBag.DisableBulkyLink = true;
     }*@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -39,11 +42,11 @@
         font-weight: 500;
         color: #053970;
         letter-spacing: 0.5px;
-        font-weight:bold;
+        font-weight: bold;
     }
 
     .file-grid {
-        margin-left:100px;
+        margin-left: 100px;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 2px 3px;
@@ -52,8 +55,8 @@
     .file-row {
         display: flex;
         flex-direction: column;
-        margin-top:20px;
-        margin-bottom:50px;
+        margin-top: 20px;
+        margin-bottom: 50px;
     }
 
         .file-row label {
@@ -153,7 +156,7 @@
 </style>
 
 <style>
-    
+
 
     /* ----- DATE BOX ----- */
     .date-wrapper {
@@ -221,9 +224,9 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-left:35%;
+        margin-left: 35%;
     }
-/*    .upload-header {
+    /*    .upload-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
