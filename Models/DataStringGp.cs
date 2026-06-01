@@ -1046,7 +1046,8 @@ namespace BulkUploader.Models
                 //DateTime InputDate = DateTime.Now.Date;
                 //string formattedDate = InputDate.ToString("yyyy-MM-dd");
                 DAL.DAL objDal = new DAL.DAL();
-                objDal.ProcName = "updateFct_my_mtd_Comissionsummary";
+                //objDal.ProcName = "updateFct_my_mtd_Comissionsummary";
+                objDal.ProcName = "updateFct_my_mtd_ComissionsummaryOnly";
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
                 status = objDal.AddData(spParam);
