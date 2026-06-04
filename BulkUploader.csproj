@@ -360,6 +360,7 @@
     <Content Include="Views\BulkUploader\WirelessrawUploader.cshtml" />
     <Content Include="Views\BulkUploader\WirelessActivityUploader.cshtml" />
     <Content Include="Views\Shared\_SessionExpire.cshtml" />
+    <Content Include="Views\BulkUploader\VABTargetUploader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\" />
