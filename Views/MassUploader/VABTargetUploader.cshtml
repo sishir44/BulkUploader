@@ -1,5 +1,5 @@
 @{
-    ViewBag.Title = "Wireless Raw Uploader";
+    ViewBag.Title = "VAB Target Uploaderd";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -12,14 +12,13 @@
     }
 
     .upload-wrapper {
-        width: 750px;
+        width: 950px;
         margin: 10px auto;
         padding: 5px 10px;
         background: #ffffff;
         border-radius: 14px;
         box-shadow: 0 12px 30px rgba(0,0,0,0.12);
         margin-top: 50px;
-        height: 350px;
     }
 
     .upload-title {
@@ -28,20 +27,18 @@
         font-weight: 500;
         color: #2d89ef;
         letter-spacing: 0.5px;
-        margin-left: -80px;
     }
 
     .file-grid {
         display: grid;
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 2px 3px;
+        margin-left:80px !important;
     }
 
     .file-row {
         display: flex;
         flex-direction: column;
-        margin-left: 30%;
-        margin-top:30px;
     }
 
         .file-row label {
@@ -71,7 +68,7 @@
     }
 
     .upload-btn {
-        width: 20%;
+        width: 15%;
         margin-top: 15px;
         padding: 12px;
         background: linear-gradient(135deg, #2d89ef, #1b5fa7);
@@ -84,7 +81,6 @@
         transition: 0.3s;
         margin-left: 35%;
         margin-bottom: 8px;
-        margin-top: 50px;
     }
 
     .success-msg {
@@ -192,57 +188,47 @@
 </style>
 
 <style>
-    #loaderOverlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.3);
-        z-index: 9999;
-        justify-content: center;
-        align-items: center;
-    }
+#loaderOverlay{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.3);
+    z-index:9999;
+    justify-content:center;
+    align-items:center;
+}
 
-    .circle-loader {
-        border: 8px solid #f3f3f3;
-        border-top: 8px solid #007bff;
-        border-radius: 50%;
-        width: 70px;
-        height: 70px;
-        animation: spin 1s linear infinite;
-    }
+.circle-loader{
+    border:8px solid #f3f3f3;
+    border-top:8px solid #007bff;
+    border-radius:50%;
+    width:70px;
+    height:70px;
+    animation:spin 1s linear infinite;
+}
 
-    @@keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
+@@keyframes spin{
+    0%{ transform:rotate(0deg); }
+    100%{ transform:rotate(360deg); }
+}
 </style>
 
 
 <div class="upload-wrapper">
-    @using (Html.BeginForm("WirelessrawUploader", "BulkUploader",
+    @using (Html.BeginForm("VABTargetUploader", "MassUploader",
         FormMethod.Post,
         new { enctype = "multipart/form-data", id = "excelForm" }))
     {
 
         <div class="upload-header">
-            <h2 class="upload-title">&#128202; Wireless Raw Uploader </h2>
+            <h2 class="upload-title">&#128202; VAB Target Uploader</h2>
             <div class="date-wrapper">
+                @*<input type="date" class="date-picker" id="date" name="date" />*@
                 <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
             </div>
-            <!--<div class="date-wrapper">-->
-            <!-- Month-Year Picker -->
-            <!--<input type="month" class="date-picker" id="monthYearPicker" />-->
-            <!-- Hidden Full Date (what you already use) -->
-            <!--<input type="hidden" id="date" name="date" />
-            </div>-->
         </div>
 
         <div class="hint">
@@ -250,49 +236,18 @@
         </div>
 
 
-
         <div class="file-grid">
 
             <div class="file-row">
-                <label>Wireless Raw Uploader </label>
-                <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
-            </div>
-
-
-            @*<div class="file-row">
-                <label>Marketing </label>
-                <input type="file" name="Marketing" accept=".xls,.xlsx" />
+                <label>Targets</label>
+                <input type="file" name="Targets" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
-                <label>Requisitions Table</label>
-                <input type="file" name="RequisitionsTable" accept=".xls,.xlsx" />
+                <label>Tiers</label>
+                <input type="file" name="Tiers" accept=".xls,.xlsx" />
             </div>
 
-            <div class="file-row">
-                <label>Wiredraw </label>
-                <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Wirelessraw </label>
-                <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Wireless Activity </label>
-                <input type="file" name="WirelessActivity" accept=".xls,.xlsx" />
-            </div>
-
-            <div class="file-row">
-                <label>Change Order Information </label>
-                <input type="file" name="ChangeOrderInformation" accept=".xls,.xlsx" />
-            </div>*@
-
-            @*<div class="file-row">
-                    <label>DTS All Information </label>
-                    <input type="file" name="DTSAllInformation" accept=".xls,.xlsx" />
-                </div>*@
         </div>
 
         <button type="submit" class="upload-btn" id="uploadBtn" disabled>Upload Files</button>
@@ -395,33 +350,3 @@
     });
 </script>
 
-<script>
-    //window.onload = function () {
-    //    // ?? Get last day of previous month
-    //    var today = new Date();
-    //    var lastDayPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-
-    //    var year = lastDayPrevMonth.getFullYear();
-    //    var month = ("0" + (lastDayPrevMonth.getMonth() + 1)).slice(-2);
-    //    var day = ("0" + lastDayPrevMonth.getDate()).slice(-2);
-    //    // ?? Set Month-Year picker (yyyy-MM)
-    //    document.getElementById("monthYearPicker").value = year + "-" + month;
-    //    // ?? Set hidden field (yyyy-MM-dd)
-    //    document.getElementById("date").value = year + "-" + month + "-" + day;
-    //};
-
-    // ?? When user changes month
-    //document.getElementById("monthYearPicker").addEventListener("change", function () {
-    //    var value = this.value; // yyyy-MM
-    //    if (value) {
-    //        var parts = value.split("-");
-    //        var year = parts[0];
-    //        var month = parts[1];
-
-    //        // ?? Get last day of selected month
-    //        var lastDay = new Date(year, month, 0).getDate();
-    //        var fullDate = year + "-" + month + "-" + lastDay;
-    //        document.getElementById("date").value = fullDate;
-    //    }
-    //});
-</script>

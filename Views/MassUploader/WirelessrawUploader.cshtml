@@ -1,5 +1,5 @@
 @{
-    ViewBag.Title = "Wired Raw Uploader";
+    ViewBag.Title = "Wireless Raw Uploader";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,16 +11,15 @@
         font-family: "Segoe UI", sans-serif;
     }
 
-
     .upload-wrapper {
         width: 750px;
-        margin: 5px auto;
+        margin: 10px auto;
         padding: 5px 10px;
         background: #ffffff;
         border-radius: 14px;
         box-shadow: 0 12px 30px rgba(0,0,0,0.12);
         margin-top: 50px;
-        height: 450px;
+        height: 350px;
     }
 
     .upload-title {
@@ -29,7 +28,7 @@
         font-weight: 500;
         color: #2d89ef;
         letter-spacing: 0.5px;
-        margin-left:-50px;
+        margin-left: -80px;
     }
 
     .file-grid {
@@ -228,13 +227,13 @@
 
 
 <div class="upload-wrapper">
-    @using (Html.BeginForm("WireDrawUploader", "BulkUploader",
+    @using (Html.BeginForm("WirelessrawUploader", "MassUploader",
         FormMethod.Post,
         new { enctype = "multipart/form-data", id = "excelForm" }))
     {
 
         <div class="upload-header">
-            <h2 class="upload-title">&#128202; Wired Raw Uploader </h2>
+            <h2 class="upload-title">&#128202; Wireless Raw Uploader </h2>
             <div class="date-wrapper">
                 <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
             </div>
@@ -255,8 +254,8 @@
         <div class="file-grid">
 
             <div class="file-row">
-                <label>Wired Raw Uploader </label>
-                <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
+                <label>Wireless Raw Uploader </label>
+                <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
             </div>
 
 

@@ -1,5 +1,5 @@
 @{
-    ViewBag.Title = "Daily Bulk Upload";
+    ViewBag.Title = "Daily Bulk Uploader";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -222,7 +222,7 @@
 
 
 <div class="upload-wrapper">
-    @using (Html.BeginForm("DailyUploader", "BulkUploader",
+    @using (Html.BeginForm("DailyUploader", "MassUploader",
         FormMethod.Post,
         new { enctype = "multipart/form-data", id = "excelForm" }))
     {

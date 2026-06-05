@@ -252,7 +252,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\BulkUploaderController.cs" />
+    <Compile Include="Controllers\MassUploaderController.cs" />
     <Compile Include="Controllers\GPReportUploaderController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -346,21 +346,21 @@
     <Content Include="Views\Login\ForgotPassword.cshtml" />
     <Content Include="Views\Shared\_Navbar.cshtml" />
     <Content Include="Views\Home\KPIUploader.cshtml" />
-    <Content Include="Views\BulkUploader\UploadExcel.cshtml" />
+    <Content Include="Views\MassUploader\UploadExcel.cshtml" />
     <Content Include="Views\Home\USHRUploader.cshtml" />
     <Content Include="Views\Home\WirelessActivityUploader.cshtml" />
-    <Content Include="Views\BulkUploader\CommissionUploader.cshtml" />
-    <Content Include="Views\BulkUploader\FraudTransactionUploader.cshtml" />
+    <Content Include="Views\MassUploader\CommissionUploader.cshtml" />
+    <Content Include="Views\MassUploader\FraudTransactionUploader.cshtml" />
     <Content Include="Views\Home\ChargebackRawUploader.cshtml" />
     <Content Include="Views\GPReportUploader\BudGetGoalUploader.cshtml" />
-    <Content Include="Views\BulkUploader\MTDUploader.cshtml" />
-    <Content Include="Views\BulkUploader\DailyUploader.cshtml" />
+    <Content Include="Views\MassUploader\MTDUploader.cshtml" />
+    <Content Include="Views\MassUploader\DailyUploader.cshtml" />
     <Content Include="Views\Login\Menu.cshtml" />
-    <Content Include="Views\BulkUploader\WireDrawUploader.cshtml" />
-    <Content Include="Views\BulkUploader\WirelessrawUploader.cshtml" />
-    <Content Include="Views\BulkUploader\WirelessActivityUploader.cshtml" />
+    <Content Include="Views\MassUploader\WireDrawUploader.cshtml" />
+    <Content Include="Views\MassUploader\WirelessrawUploader.cshtml" />
+    <Content Include="Views\MassUploader\WirelessActivityUploader.cshtml" />
     <Content Include="Views\Shared\_SessionExpire.cshtml" />
-    <Content Include="Views\BulkUploader\VABTargetUploader.cshtml" />
+    <Content Include="Views\MassUploader\VABTargetUploader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\" />

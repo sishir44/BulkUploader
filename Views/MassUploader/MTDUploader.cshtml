@@ -1,5 +1,5 @@
 @{
-    ViewBag.Title = "Fraud Transaction Uploader";
+    ViewBag.Title = "MTD Uploader";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -31,9 +31,8 @@
 
     .file-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 2px 3px;
-        margin-left:80px !important;
     }
 
     .file-row {
@@ -188,47 +187,63 @@
 </style>
 
 <style>
-#loaderOverlay{
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.3);
-    z-index:9999;
-    justify-content:center;
-    align-items:center;
-}
+    #loaderOverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
 
-.circle-loader{
-    border:8px solid #f3f3f3;
-    border-top:8px solid #007bff;
-    border-radius:50%;
-    width:70px;
-    height:70px;
-    animation:spin 1s linear infinite;
-}
+    .circle-loader {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #007bff;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+    }
 
-@@keyframes spin{
-    0%{ transform:rotate(0deg); }
-    100%{ transform:rotate(360deg); }
-}
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 
 
+
 <div class="upload-wrapper">
-    @using (Html.BeginForm("FraudTransactionUploader", "BulkUploader",
+    @using (Html.BeginForm("MTDUploader", "MassUploader",
         FormMethod.Post,
         new { enctype = "multipart/form-data", id = "excelForm" }))
     {
 
         <div class="upload-header">
-            <h2 class="upload-title">&#128202; Fraud Transaction Uploader</h2>
+            <h2 class="upload-title">&#128202; MTD Bulk Uploader</h2>
             <div class="date-wrapper">
-                @*<input type="date" class="date-picker" id="date" name="date" />*@
                 <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
             </div>
+            <!--<div class="date-wrapper">-->
+            <!-- Month-Year Picker -->
+            <!--<input type="month" class="date-picker" id="monthYearPicker" />-->
+            <!-- Hidden Full Date (what you already use) -->
+            <!--<input type="hidden" id="date" name="date" />
+            </div>-->
+        </div>
+
+        <div>
+            IsFinal
+            <input type="checkbox" name="IsFinal" value="1" />
         </div>
 
         <div class="hint">
@@ -240,13 +255,98 @@
         <div class="file-grid">
 
             <div class="file-row">
-                <label>Manual Credit Card</label>
-                <input type="file" name="ManualCC" accept=".xls,.xlsx" />
+                <label>KPI National</label>
+                <input type="file" name="KPINational" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
-                <label>MAPAR Historical Analysis</label>
-                <input type="file" name="MAPARHistoricalAnalysis" accept=".xls,.xlsx" />
+                <label>KPI National 1</label>
+                <input type="file" name="KPINational1" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>MIS Location</label>
+                <input type="file" name="MISLocation" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>KPI Location 1</label>
+                <input type="file" name="KPILocation1" accept=".xls,.xlsx" />
+            </div>
+
+            @*<div class="file-row">
+                    <label>MIS National</label>
+                    <input type="file" name="MISNational" accept=".xls,.xlsx" />
+                </div>*@
+
+            <div class="file-row">
+                <label>MTD National 1</label>
+                <input type="file" name="MTDNational1" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>MTD National 2</label>
+                <input type="file" name="MTDNational2" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>MTD Location 3</label>
+                <input type="file" name="MTDLocation3" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>MTD Location 4</label>
+                <input type="file" name="MTDLocation4" accept=".xls,.xlsx" />
+            </div>
+
+            @*<div class="file-row">
+                    <label>Leads Called </label>
+                    <input type="file" name="LeadsCalled" accept=".xls,.xlsx" />
+                </div>*@
+
+            <div class="file-row">
+                <label>Employee Rep Data</label>
+                <input type="file" name="EmployeeRepData" accept=".xls,.xlsx" />
+            </div>
+
+            @*<div class="file-row">
+                    <label>Marketing </label>
+                    <input type="file" name="Marketing" accept=".xls,.xlsx" />
+                </div>*@
+
+            @*<div class="file-row">
+                    <label>Requisitions Table</label>
+                    <input type="file" name="RequisitionsTable" accept=".xls,.xlsx" />
+                </div>*@
+
+            @*<div class="file-row">
+                    <label>Wiredraw </label>
+                    <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
+                </div>
+
+                <div class="file-row">
+                    <label>Wirelessraw </label>
+                    <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
+                </div>*@
+
+            <div class="file-row">
+                <label>Employee Detail for Time</label>
+                <input type="file" name="EmployeeDetailforTime" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>ATTUID Details MIS</label>
+                <input type="file" name="ATTUIDDetailsMIS" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>TA Total Hours Summary</label>
+                <input type="file" name="TATotalHoursSummary" accept=".xls,.xlsx" />
+            </div>
+
+            <div class="file-row">
+                <label>Rep Data Day Wise</label>
+                <input type="file" name="RepDataDayWise" accept=".xls,.xlsx" />
             </div>
 
         </div>
@@ -324,7 +424,7 @@
     });
 </script>
 
-<script>
+@*<script>
     document.addEventListener("keydown", function (e) {
         if (e.ctrlKey && e.key === "5") {
             e.preventDefault();
@@ -349,5 +449,35 @@
         }
 
     });
-</script>
+</script>*@
 
+@*<script>
+    window.onload = function () {
+        // 👉 Get last day of previous month
+        var today = new Date();
+        var lastDayPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+
+        var year = lastDayPrevMonth.getFullYear();
+        var month = ("0" + (lastDayPrevMonth.getMonth() + 1)).slice(-2);
+        var day = ("0" + lastDayPrevMonth.getDate()).slice(-2);
+        // 👉 Set Month-Year picker (yyyy-MM)
+        document.getElementById("monthYearPicker").value = year + "-" + month;
+        // 👉 Set hidden field (yyyy-MM-dd)
+        document.getElementById("date").value = year + "-" + month + "-" + day;
+    };
+
+    // 👉 When user changes month
+    document.getElementById("monthYearPicker").addEventListener("change", function () {
+        var value = this.value; // yyyy-MM
+        if (value) {
+            var parts = value.split("-");
+            var year = parts[0];
+            var month = parts[1];
+
+            // 👉 Get last day of selected month
+            var lastDay = new Date(year, month, 0).getDate();
+            var fullDate = year + "-" + month + "-" + lastDay;
+            document.getElementById("date").value = fullDate;
+        }
+    });
+</script>*@

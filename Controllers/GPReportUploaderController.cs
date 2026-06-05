@@ -319,7 +319,7 @@ namespace BulkUploader.Controllers
                 var st = new StackTrace(ex, true);
                 var frame = st.GetFrame(0);
                 string line = frame?.GetFileLineNumber().ToString();
-                Common.recorderror("BukhUploader/BulkUploaderController/SaveFiles", ex.Message, "", line);
+                Common.recorderror("BulkUploader/MassUploaderController/SaveFiles", ex.Message, "", line);
             }
         }
 
