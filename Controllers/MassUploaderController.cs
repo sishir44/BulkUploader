@@ -946,9 +946,7 @@ namespace BulkUploader.Controllers
                                 // Currency, %, commas
                                 if (Regex.IsMatch(value, @"^[\(\)\d\$\.,%]+$"))
                                 {
-                                    value = value.Replace("(", "")
-                                                 .Replace(")", "")
-                                                 .Replace("$", "")
+                                    value = value.Replace("$", "")
                                                  .Replace(",", "")
                                                  .Replace("%", "");
 
