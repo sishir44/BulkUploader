@@ -173,7 +173,9 @@ namespace BulkUploader.Controllers
             HttpPostedFileBase CommissionDetails,
             HttpPostedFileBase CommissionAccessories,
             HttpPostedFileBase SMFBBDetail,
+            HttpPostedFileBase SMFBBSummary,
             HttpPostedFileBase SMFDetail,
+            HttpPostedFileBase SMFSummary,
             HttpPostedFileBase ARCompensationOffset,
             HttpPostedFileBase DemoDevices,
             HttpPostedFileBase IntangibleSKUs,
@@ -189,6 +191,7 @@ namespace BulkUploader.Controllers
             HttpPostedFileBase TradeIns,
             HttpPostedFileBase Treasury,
             HttpPostedFileBase WirelessBillCreds,
+            HttpPostedFileBase Wiredbillcredits,
             //HttpPostedFileBase ProfitLossStatement,
             string date
             )
@@ -200,7 +203,9 @@ namespace BulkUploader.Controllers
                         { "CommissionDetails", (CommissionDetails, "Temp_my_mtdommissionDetail") },
                         { "CommissionAccessories", (CommissionAccessories,"Temp_my_mtdcommissionAccessories") },
                         { "SMFBBDetail", (SMFBBDetail,"Temp_SMFBBDetail") },
+                        { "SMFBBSummary", (SMFBBSummary,"Temp_SMFBBSummary") },
                         { "SMFDetail", (SMFDetail,"Temp_SMFDetail") },
+                        { "SMFSummary", (SMFSummary,"Temp_SMFSummary") },
                         { "ARCompensationOffset", (ARCompensationOffset,"Temp_ARCompensation_Offset") },
                         { "DemoDevices", (DemoDevices,"temp_demodevices") },
                         { "IntangibleSKUs", (IntangibleSKUs,"Temp_intangible") },
@@ -215,6 +220,7 @@ namespace BulkUploader.Controllers
                         { "TradeIns", (TradeIns,"temp_tradein") },
                         { "Treasury", (Treasury,"temp_treasury") },
                         { "WirelessBillCreds", (WirelessBillCreds,"Temp_WirelessBillCreds") },
+                        { "Wiredbillcredits", (Wiredbillcredits,"Temp_Wiredbillcredits") },
                         //{ "ProfitLossStatement", (ProfitLossStatement,"Temp_ProfitLossStatement") },
                     };
                 //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
