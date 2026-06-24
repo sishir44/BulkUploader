@@ -394,7 +394,7 @@ namespace BulkUploader.Controllers
                     else
                     {
                         //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
-                        ViewBag.Error = "Uploaded Failed!";//status;
+                        ViewBag.Error = status;
                     }
                 }
                 return View("ChargebackRawUploader");

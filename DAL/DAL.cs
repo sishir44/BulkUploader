@@ -429,7 +429,7 @@ namespace BulkUploader.DAL
                 }
 
                 // OUTPUT PARAMETER
-                SqlParameter statusParam = new SqlParameter("@Status", SqlDbType.Int);
+                SqlParameter statusParam = new SqlParameter("@Status", SqlDbType.VarChar,500);
                 statusParam.Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(statusParam);
 
