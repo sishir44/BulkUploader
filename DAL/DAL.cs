@@ -398,6 +398,58 @@ namespace BulkUploader.DAL
 
         }
 
+        public string AddDataChargeBack(SPParameters spparam)
+        {
+            try
+            {
+                cmd.CommandText = sProcName;
+                cmd.CommandTimeout = 0;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = cn;
+
+                int i = 0;
+
+                IEnumerator myEnumerator = spparam.GetParams().GetEnumerator();
+
+                while (myEnumerator.MoveNext())
+                {
+                    ParamData pData = (ParamData)myEnumerator.Current;
+
+                    cmd.Parameters.Add(pData.pName, pData.pDataType);
+
+                    if (pData.DTpValue != null)
+                        cmd.Parameters[i].Value = pData.DTpValue;
+
+                    if (pData.pValue != null)
+                        cmd.Parameters[i].Value = pData.pValue;
+                    else if (pData.pic != null)
+                        cmd.Parameters[i].Value = pData.pic;
+
+                    i++;
+                }
+
+                // OUTPUT PARAMETER
+                SqlParameter statusParam = new SqlParameter("@Status", SqlDbType.Int);
+                statusParam.Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(statusParam);
+
+                cn.Open();
+
+                cmd.ExecuteNonQuery();
+
+                return cmd.Parameters["@Status"].Value.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+                cn.Close();
+            }
+        }
+
         //public string AddData(SPParameters spparam)
         //{
         //    int result = 0;

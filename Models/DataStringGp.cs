@@ -1104,7 +1104,8 @@ namespace BulkUploader.Models
                 objDal.ProcName = "updateChargebackRaw";
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
-                status = objDal.AddData(spParam);
+                //status = objDal.AddData(spParam);
+                status = objDal.AddDataChargeBack(spParam);
                 return status;
             }
             catch (Exception ex)
