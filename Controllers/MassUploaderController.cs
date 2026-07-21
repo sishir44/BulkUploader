@@ -444,7 +444,7 @@ namespace BulkUploader.Controllers
                 if (missingFiles.Any())
                     ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
 
-                if (res == "1")
+                if (res == "1" && !missingFiles.Any() && string.IsNullOrWhiteSpace(Convert.ToString(ViewBag.Warning)))
                 {
                     status = DataStringGp.MTDUploaderUpdateSTP(date, IsFinal);
                     if (status == "1")
@@ -456,6 +456,8 @@ namespace BulkUploader.Controllers
                         //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
                         ViewBag.Error = status;
                     }
+                } else {
+                    ViewBag.Warning = (ViewBag.Warning ?? "") + "\nAll files must be uploaded to the temp tables.";
                 }
 
                 return View("MTDUploader");
