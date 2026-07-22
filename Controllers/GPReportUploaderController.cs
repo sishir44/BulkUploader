@@ -71,10 +71,9 @@ namespace BulkUploader.Controllers
             try
             {
                 var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
-            {
-
-                { "MobilyBudGet", (MobilyBudGet,"Temp_Goals") },
-            };
+                {
+                    { "MobilyBudGet", (MobilyBudGet,"Temp_Goals") },
+                };
                 var uploadedFiles = new List<string>();
                 var missingFiles = new List<string>();
                 string res = "";
@@ -107,7 +106,7 @@ namespace BulkUploader.Controllers
                 if (missingFiles.Any())
                     ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
 
-                if (res == "1")
+                if (res == "1" && !missingFiles.Any() && string.IsNullOrWhiteSpace(Convert.ToString(ViewBag.Warning)))
                 {
                     status = DataStringGp.BudGetGoalUpdateSTP(date);
                     if (status == "1" || Convert.ToInt32(status) > 0)
@@ -119,6 +118,10 @@ namespace BulkUploader.Controllers
                         //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
                         ViewBag.Error = status;
                     }
+                }
+                else
+                {
+                    ViewBag.Warning = (ViewBag.Warning ?? "") + "\nAll files must be uploaded to the temp tables.";
                 }
                 return View("BudGetGoalUploader");
             }
@@ -352,6 +355,36 @@ namespace BulkUploader.Controllers
             }
         }
         // ===========  BULK INSERT METHOD  ================== //
+        //public string BulkInsert(DataTable dt, string tableName)
+        //{
+        //    try
+        //    {
+        //        string conStr = ConfigurationManager.ConnectionStrings["APIConnStr"].ConnectionString;
+
+        //        using (SqlConnection con = new SqlConnection(conStr))
+        //        {
+        //            con.Open();
+        //            // 🔹 Step 1: Delete old records
+        //            using (SqlCommand cmd = new SqlCommand($"DELETE FROM [{tableName}]", con))
+        //            {
+        //                cmd.ExecuteNonQuery();
+        //            }
+        //            // 🔹 Step 2: Bulk insert new records
+        //            using (SqlBulkCopy bulk = new SqlBulkCopy(con))
+        //            {
+        //                bulk.DestinationTableName = tableName;
+        //                bulk.WriteToServer(dt);
+        //            }
+        //        }
+        //        return "1";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return "Error has occured :  " + ex.Message;
+        //        //return "0";
+        //    }
+        //}
+
         public string BulkInsert(DataTable dt, string tableName)
         {
             try
@@ -361,24 +394,60 @@ namespace BulkUploader.Controllers
                 using (SqlConnection con = new SqlConnection(conStr))
                 {
                     con.Open();
-                    // 🔹 Step 1: Delete old records
+
+                    // Get table schema
+                    DataTable dbSchema = con.GetSchema("Columns", new[] { null, null, tableName, null });
+
+                    // Sort by ordinal position
+                    var dbColumns = dbSchema.AsEnumerable()
+                        .Select(r => r["COLUMN_NAME"].ToString())
+                        .ToList();
+
+                    var excelColumns = dt.Columns.Cast<DataColumn>()
+                                                 .Select(c => c.ColumnName)
+                                                 .ToList();
+
+                    // Check column count
+                    if (dbColumns.Count != excelColumns.Count)
+                    {
+                        return $"Column count mismatch. Excel has {excelColumns.Count} columns while table has {dbColumns.Count} columns.";
+                    }
+
+                    // Check column names and order
+                    for (int i = 0; i < dbColumns.Count; i++)
+                    {
+                        if (!dbColumns[i].Equals(excelColumns[i], StringComparison.OrdinalIgnoreCase))
+                        {
+                            return $"Column mismatch at position {i + 1}. Expected '{dbColumns[i]}', but found '{excelColumns[i]}'.";
+                        }
+                    }
+
+                    // Delete old records
                     using (SqlCommand cmd = new SqlCommand($"DELETE FROM [{tableName}]", con))
                     {
                         cmd.ExecuteNonQuery();
                     }
-                    // 🔹 Step 2: Bulk insert new records
+
+                    // Bulk Insert
                     using (SqlBulkCopy bulk = new SqlBulkCopy(con))
                     {
                         bulk.DestinationTableName = tableName;
+
+                        // Explicit mapping
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            bulk.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+                        }
+
                         bulk.WriteToServer(dt);
                     }
                 }
+
                 return "1";
             }
             catch (Exception ex)
             {
-                return "Error has occured :  " + ex.Message;
-                //return "0";
+                return "Error has occurred: " + ex.Message;
             }
         }
     }
