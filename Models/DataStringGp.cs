@@ -1095,6 +1095,24 @@ namespace BulkUploader.Models
             }
         }
 
+        public static string QuantumUpdateSTP(string date)
+        {
+            try
+            {
+                string status = "";
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "UpdateFct_My_MTD_QuantumFiber";
+                DAL.SPParameters spParam = new DAL.SPParameters();
+                spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
+                status = objDal.AddData(spParam);
+                return status == "Operation was successful" ? "1" : status;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static string ChargebackRawUpdateSTP(string date)
         {
             try

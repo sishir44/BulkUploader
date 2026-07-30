@@ -361,6 +361,7 @@
     <Content Include="Views\MassUploader\WirelessActivityUploader.cshtml" />
     <Content Include="Views\Shared\_SessionExpire.cshtml" />
     <Content Include="Views\MassUploader\VABTargetUploader.cshtml" />
+    <Content Include="Views\MassUploader\QuantumUploader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\" />
