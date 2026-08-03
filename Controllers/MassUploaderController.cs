@@ -1063,6 +1063,12 @@ namespace BulkUploader.Controllers
                                     }
                                 }
 
+                                // Remove red
+                                if (value.StartsWith("Red(") && value.EndsWith(")"))
+                                {
+                                    value = value.Substring(3); // Remove "Red"
+                                }
+
                                 // Currency, %, commas
                                 if (Regex.IsMatch(value, @"^[\(\)\d\$\.,%]+$"))
                                 {
@@ -1078,7 +1084,7 @@ namespace BulkUploader.Controllers
                                     {
                                         row[col] = value;
                                     }
-                                }
+                                } 
                                 else
                                 {
                                     row[col] = value;

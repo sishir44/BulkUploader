@@ -1080,6 +1080,12 @@ namespace BulkUploader.Controllers
                                     }
                                 }
 
+                                // Remove red
+                                if (value.StartsWith("Red(") && value.EndsWith(")"))
+                                {
+                                    value = value.Substring(3); // Remove "Red"
+                                }
+
                                 // ✅ 2. Handle Currency, %, Parentheses
                                 if (Regex.IsMatch(value, @"^[\(\)\d\$\.,%]+$"))
                                 {
