@@ -985,6 +985,80 @@ namespace BulkUploader.Controllers
             }
         }
 
+        [HttpGet]
+        [ValidateInput(false)]
+        public ActionResult RetailUploader()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult RetailUploader(HttpPostedFileBase RetailNext, string date)
+        {
+            try
+            {
+                var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
+        {
+            { "RetailNext", (RetailNext, "Temp_RetailNext") },
+        };
+                //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
+                var uploadedFiles = new List<string>();
+                var missingFiles = new List<string>();
+                string res = "";
+                string status = "";
+                foreach (var item in files)
+                {
+                    var file = item.Value.File;
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        SaveFiles(file);
+                        res = UploadToTable(file, item.Value.Table);
+                        if (res != "1")
+                        {
+                            //ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
+                            ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key + "\n" + res;
+                            continue;
+                        }
+                        uploadedFiles.Add(item.Key);
+                    }
+                    else
+                    {
+                        missingFiles.Add(item.Key);
+                    }
+                }
+                if (uploadedFiles.Any() && res != "" && res != null)
+                {
+                    ViewBag.Success = "Data Uploaded to temp table: " + string.Join(", ", uploadedFiles);
+                }
+                if (missingFiles.Any())
+                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
+
+                if (res == "1" && !missingFiles.Any() && string.IsNullOrWhiteSpace(Convert.ToString(ViewBag.Warning)))
+                {
+                    status = DataStringGp.RetailUpdateSTP(date);
+                    if (status == "1" || (int.TryParse(status, out int result) && result > 0))
+                    {
+                        ViewBag.Success = "Uploaded Successfully!";
+                    }
+                    else
+                    {
+                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                        ViewBag.Error = status;
+                    }
+                }
+                else
+                {
+                    ViewBag.Warning = (ViewBag.Warning ?? "") + "\nAll files must be uploaded to the temp tables.";
+                }
+                return View("RetailUploader");
+            }
+            catch (System.Exception ex)
+            {
+                ViewBag.Warning = ex.ToString() + "\n\n" + ex.StackTrace;
+                return View("RetailUploader");
+            }
+        }
+
 
 
 
