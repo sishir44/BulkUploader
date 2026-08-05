@@ -916,7 +916,7 @@ namespace BulkUploader.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult QuantumUploader(HttpPostedFileBase QuantumFiber, HttpPostedFileBase AuthorizedRetailPremium, HttpPostedFileBase CommissionDeduction, string date)
+        public ActionResult QuantumUploader(HttpPostedFileBase QuantumFiber, HttpPostedFileBase AuthorizedRetailPremium, HttpPostedFileBase CommissionDeduction, HttpPostedFileBase EmployeeEarnings, string date)
         {
             try
             {
@@ -925,6 +925,7 @@ namespace BulkUploader.Controllers
                     { "QuantumFiber", (QuantumFiber,"Temp_QuantumFiber") },
                     { "AuthorizedRetailPremium", (AuthorizedRetailPremium, "Temp_AuthorizedRetailPremium") },
                     { "CommissionDeduction", (CommissionDeduction, "Temp_CommissionDeduction") },
+                    { "EmployeeEarnings", (EmployeeEarnings, "Temp_EmployeeEarnings") },
                 };
                 //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
                 var uploadedFiles = new List<string>();
@@ -1159,7 +1160,7 @@ namespace BulkUploader.Controllers
                                         row[col] = value;
                                     }
                                 } 
-                                else
+                                else                                                                       
                                 {
                                     row[col] = value;
                                 }
