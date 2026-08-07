@@ -1223,14 +1223,18 @@ namespace BulkUploader.Controllers
                     // Get table schema
                     DataTable dbSchema = con.GetSchema("Columns", new[] { null, null, tableName, null });
 
-                    // Sort by ordinal position
+                    // Sort by ordinal position of table column
                     var dbColumns = dbSchema.AsEnumerable()
-                        .Select(r => r["COLUMN_NAME"].ToString())
-                        .ToList();
+                     .Select(r => r["COLUMN_NAME"].ToString()
+                         .Trim()
+                         .Replace(" ", "")
+                         .ToLower())
+                     .ToList();
 
+                    // excel column name
                     var excelColumns = dt.Columns.Cast<DataColumn>()
-                                                 .Select(c => c.ColumnName)
-                                                 .ToList();
+                    .Select(c => Regex.Replace(c.ColumnName.Trim(), @"\s+", "").ToLower())
+                    .ToList();
 
                     // Check column count
                     if (dbColumns.Count != excelColumns.Count)
