@@ -433,7 +433,7 @@ namespace BulkUploader.Controllers
                     if (file != null && file.ContentLength > 0)
                     {
                         SaveFiles(file);
-                        res = UploadToTable(file, item.Value.Table);
+                        res = UploadToTable(file, item.Value.Table, true);
                         if (res != "1")
                         {
                             //ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
@@ -1101,7 +1101,7 @@ namespace BulkUploader.Controllers
 
         // COMMON UPLOAD METHOD
         // =============================
-        private string UploadToTable(HttpPostedFileBase file, string tableName)
+        private string UploadToTable(HttpPostedFileBase file, string tableName, bool mtduploader=false)
         {
             try
             {
@@ -1167,8 +1167,7 @@ namespace BulkUploader.Controllers
                             }
                         }
                     }
-
-                    return BulkInsert(dt, tableName);
+                    return mtduploader ? BulkInsertMTD(dt, tableName) : BulkInsert(dt, tableName);
                 }
             }
             catch (Exception ex)
@@ -1180,35 +1179,35 @@ namespace BulkUploader.Controllers
         // =============================
         // BULK INSERT METHOD
         // =============================
-        //public string BulkInsert(DataTable dt, string tableName)
-        //{
-        //    try
-        //    {
-        //        string conStr = ConfigurationManager.ConnectionStrings["APIConnStr"].ConnectionString;
+        public string BulkInsertMTD(DataTable dt, string tableName)
+        {
+            try
+            {
+                string conStr = ConfigurationManager.ConnectionStrings["APIConnStr"].ConnectionString;
 
-        //        using (SqlConnection con = new SqlConnection(conStr))
-        //        {
-        //            con.Open();
-        //            // 🔹 Step 1: Delete old records
-        //            using (SqlCommand cmd = new SqlCommand($"DELETE FROM [{tableName}]", con))
-        //            {
-        //                cmd.ExecuteNonQuery();
-        //            }
-        //            // 🔹 Step 2: Bulk insert new records
-        //            using (SqlBulkCopy bulk = new SqlBulkCopy(con))
-        //            {
-        //                bulk.DestinationTableName = tableName;
-        //                bulk.WriteToServer(dt);
-        //            }
-        //        }
-        //        return "1";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return "Error has occured :  " + ex.Message;
-        //        //return "0";
-        //    }
-        //}
+                using (SqlConnection con = new SqlConnection(conStr))
+                {
+                    con.Open();
+                    // 🔹 Step 1: Delete old records
+                    using (SqlCommand cmd = new SqlCommand($"DELETE FROM [{tableName}]", con))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    // 🔹 Step 2: Bulk insert new records
+                    using (SqlBulkCopy bulk = new SqlBulkCopy(con))
+                    {
+                        bulk.DestinationTableName = tableName;
+                        bulk.WriteToServer(dt);
+                    }
+                }
+                return "1";
+            }
+            catch (Exception ex)
+            {
+                return "Error has occured :  " + ex.Message;
+                //return "0";
+            }
+        }
 
         public string BulkInsert(DataTable dt, string tableName)
         {
