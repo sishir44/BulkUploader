@@ -239,7 +239,7 @@ namespace BulkUploader.Controllers
                     if (file != null && file.ContentLength > 0)
                     {
                         SaveFiles(file);
-                        res = UploadToTable(file, item.Value.Table);
+                        res = UploadToTable(file, item.Value.Table, false, true);
                         if (res != "1")
                         {
                             //ViewBag.Warning = "Data is not uploaded on temp table for: " + item.Key;
@@ -1101,7 +1101,7 @@ namespace BulkUploader.Controllers
 
         // COMMON UPLOAD METHOD
         // =============================
-        private string UploadToTable(HttpPostedFileBase file, string tableName, bool mtduploader=false)
+        private string UploadToTable(HttpPostedFileBase file, string tableName, bool mtduploader = false, bool comexlDt = false)
         {
             try
             {
@@ -1113,8 +1113,15 @@ namespace BulkUploader.Controllers
                 using (var package = new ExcelPackage(file.InputStream))
                 {
                     var worksheet = package.Workbook.Worksheets[1];
+                    DataTable dt;
 
-                    DataTable dt = ExcelHelper.ExcelToDataTable(worksheet);
+                    if(comexlDt)
+                    {
+                        dt = ExcelHelper.ExcelToCommissionDataTable(worksheet);
+                    } else
+                    {
+                        dt = ExcelHelper.ExcelToDataTable(worksheet);
+                    }
 
                     foreach (DataRow row in dt.Rows)
                     {
