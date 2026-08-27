@@ -216,10 +216,16 @@ public static class ExcelHelper
                         {
                             double number = Convert.ToDouble(value);
 
-                            if (number > 0 && number < 2958465)
+                            bool isDateFormat =
+                                format.Contains("yy") ||
+                                format.Contains("mm") ||
+                                format.Contains("dd") ||
+                                format.Contains("h") ||
+                                format.Contains("am/pm");
+
+                            if (isDateFormat && number > 0 && number < 2958465)
                             {
-                                 date =
-                                    DateTime.FromOADate(number);
+                                 date = DateTime.FromOADate(number);
 
                                 row[index] =
                                     (format.Contains("hh") ||
