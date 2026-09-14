@@ -196,6 +196,7 @@ namespace BulkUploader.Controllers
             HttpPostedFileBase Treasury,
             HttpPostedFileBase WirelessBillCreds,
             HttpPostedFileBase Wiredbillcredits,
+            HttpPostedFileBase ComKPINational,
             //HttpPostedFileBase ProfitLossStatement,
             string date
             )
@@ -225,6 +226,7 @@ namespace BulkUploader.Controllers
                         { "Treasury", (Treasury,"temp_treasury") },
                         { "WirelessBillCreds", (WirelessBillCreds,"Temp_WirelessBillCreds") },
                         { "Wiredbillcredits", (Wiredbillcredits,"Temp_Wiredbillcredits") },
+                        { "ComKPINational", (ComKPINational,"Temp_Commission_NationalKPI") },
                         //{ "ProfitLossStatement", (ProfitLossStatement,"Temp_ProfitLossStatement") },
                     };
                 //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
@@ -1232,11 +1234,9 @@ namespace BulkUploader.Controllers
 
                     // Sort by ordinal position of table column
                     var dbColumns = dbSchema.AsEnumerable()
-                     .Select(r => r["COLUMN_NAME"].ToString()
-                         .Trim()
-                         .Replace(" ", "")
-                         .ToLower())
-                     .ToList();
+                        .Select(r => Regex.Replace(
+                            r["COLUMN_NAME"].ToString().Trim(),@"\s+","").ToLower())
+                        .ToList();
 
                     // excel column name
                     var excelColumns = dt.Columns.Cast<DataColumn>()
