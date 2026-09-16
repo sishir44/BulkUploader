@@ -197,6 +197,7 @@ namespace BulkUploader.Controllers
             HttpPostedFileBase WirelessBillCreds,
             HttpPostedFileBase Wiredbillcredits,
             HttpPostedFileBase ComKPINational,
+            HttpPostedFileBase InitCashFund,
             //HttpPostedFileBase ProfitLossStatement,
             string date
             )
@@ -227,6 +228,7 @@ namespace BulkUploader.Controllers
                         { "WirelessBillCreds", (WirelessBillCreds,"Temp_WirelessBillCreds") },
                         { "Wiredbillcredits", (Wiredbillcredits,"Temp_Wiredbillcredits") },
                         { "ComKPINational", (ComKPINational,"Temp_Commission_NationalKPI") },
+                        { "InitCashFund", (InitCashFund,"Temp_InitialCashFund") },
                         //{ "ProfitLossStatement", (ProfitLossStatement,"Temp_ProfitLossStatement") },
                     };
                 //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
