@@ -4,6 +4,7 @@
 }
 
 <meta charset="utf-8" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
     body {
@@ -215,6 +216,35 @@
 }
 </style>
 
+<style>
+    .select-all-btn {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: bold;
+        margin-left: 90%;
+        border: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        background: #A4E1F5;
+        color:black;
+    }
+
+        .select-all-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .select-all-btn:active {
+            transform: scale(0.95);
+        }
+</style>
+
 <div class="upload-wrapper">
     @using (Html.BeginForm("CommissionUploader", "MassUploader",
         FormMethod.Post,
@@ -224,8 +254,8 @@
         <div class="upload-header">
             <h2 class="upload-title">&#128202; Commission Uploader</h2>
             @*<div class="date-wrapper">
-            <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
-        </div>*@
+                    <input type="date" class="date-picker" id="date" name="date" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")" />
+                </div>*@
             <div class="date-wrapper">
                 <!-- Month-Year Picker -->
                 <input type="month" class="date-picker" id="monthYearPicker" />
@@ -240,133 +270,133 @@
         </div>
 
 
+        <button type="button" id="btnSelectAll" class="btn btn-success select-all-btn" title="Select All Excel Files"> All Files
+            <i class="fa fa-file-excel-o"></i>
+        </button>
+        <input type="file" id="allExcelFiles" multiple accept=".xls,.xlsx" style="display:none;">
+
 
         <div class="file-grid">
 
             <div class="file-row">
                 <label>Commission Detail</label>
-                <input type="file" name="CommissionDetails" accept=".xls,.xlsx" />
+                <input type="file" name="CommissionDetails" id="file1" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Commission Accessories</label>
-                <input type="file" name="CommissionAccessories" accept=".xls,.xlsx" />
+                <input type="file" name="CommissionAccessories" id="file2" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>SMFBB Detail MOBILY</label>
-                <input type="file" name="SMFBBDetail" accept=".xls,.xlsx" />
+                <input type="file" name="SMFBBDetail" id="file3" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>SMFBB Summary</label>
-                <input type="file" name="SMFBBSummary" accept=".xls,.xlsx" />
+                <input type="file" name="SMFBBSummary" id="file4" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>SMF Detail MOBILY</label>
-                <input type="file" name="SMFDetail" accept=".xls,.xlsx" />
+                <input type="file" name="SMFDetail" id="file5" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>SMF Summary</label>
-                <input type="file" name="SMFSummary" accept=".xls,.xlsx" />
+                <input type="file" name="SMFSummary" id="file6" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>AR Compensation Offset</label>
-                <input type="file" name="ARCompensationOffset" accept=".xls,.xlsx" />
+                <input type="file" name="ARCompensationOffset" id="file7" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Demo Devices</label>
-                <input type="file" name="DemoDevices" accept=".xls,.xlsx" />
+                <input type="file" name="DemoDevices" id="file8" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Intangible SKUs</label>
-                <input type="file" name="IntangibleSKUs" accept=".xls,.xlsx" />
+                <input type="file" name="IntangibleSKUs" id="file9" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Jline</label>
-                <input type="file" name="Jline" accept=".xls,.xlsx" />
+                <input type="file" name="Jline" id="file10" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Manual Discount</label>
-                <input type="file" name="ManualDiscount" accept=".xls,.xlsx" />
+                <input type="file" name="ManualDiscount" id="file11" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Restocking</label>
-                <input type="file" name="Restocking" accept=".xls,.xlsx" />
+                <input type="file" name="Restocking" id="file12" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Returns</label>
-                <input type="file" name="Returns" accept=".xls,.xlsx" />
+                <input type="file" name="Returns" id="file13" accept=".xls,.xlsx" />
             </div>
-
-            @*<div class="file-row">
-            <label>Inventory Shrink</label>
-            <input type="file" name="InventoryShrink" accept=".xls,.xlsx" />
-        </div>*@
 
             <div class="file-row">
                 <label>RLO Not Received</label>
-                <input type="file" name="RLONotReceived" accept=".xls,.xlsx" />
+                <input type="file" name="RLONotReceived" id="file14" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Serialized Sold</label>
-                <input type="file" name="SerializedSold" accept=".xls,.xlsx" />
+                <input type="file" name="SerializedSold" id="file15" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Shrink1</label>
-                <input type="file" name="Shrink1" accept=".xls,.xlsx" />
+                <input type="file" name="Shrink1" id="file16" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Shrink2</label>
-                <input type="file" name="Shrink2" accept=".xls,.xlsx" />
+                <input type="file" name="Shrink2" id="file17" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Trade Ins </label>
-                <input type="file" name="TradeIns" accept=".xls,.xlsx" />
+                <input type="file" name="TradeIns" id="file18" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Treasury</label>
-                <input type="file" name="Treasury" accept=".xls,.xlsx" />
+                <input type="file" name="Treasury" id="file19" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Wireless Bill Creds</label>
-                <input type="file" name="WirelessBillCreds" accept=".xls,.xlsx" />
+                <input type="file" name="WirelessBillCreds" id="file20" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Wired Bill Credits</label>
-                <input type="file" name="Wiredbillcredits" accept=".xls,.xlsx" />
+                <input type="file" name="Wiredbillcredits" id="file21" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Commission KPINational</label>
-                <input type="file" name="ComKPINational" accept=".xls,.xlsx" />
+                <input type="file" name="ComKPINational" id="file22" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Initial Cash Fund</label>
-                <input type="file" name="InitCashFund" accept=".xls,.xlsx" />
+                <input type="file" name="InitCashFund" id="file23" accept=".xls,.xlsx" />
             </div>
 
             @*<div class="file-row">
-            <label>Profit And Loss Statement</label>
-            <input type="file" name="ProfitLossStatement" accept=".xls,.xlsx" />
-        </div>*@
+                    <label>Profit And Loss Statement</label>
+                    <input type="file" name="ProfitLossStatement" accept=".xls,.xlsx" />
+                </div>*@
 
         </div>
 
@@ -499,5 +529,37 @@
             var fullDate = year + "-" + month + "-" + lastDay;
             document.getElementById("date").value = fullDate;
         }
+    });
+</script>
+
+<script>
+
+    $("#btnSelectAll").click(function () {
+        $("#allExcelFiles").click();
+    });
+
+    // When files are selected
+    $("#allExcelFiles").change(function () {
+        var files = this.files;
+
+        // Check number of files
+        if (files.length > 23) {
+            alert("Please select all files.");
+            this.value = "";
+            return;
+        }
+
+        // Bind selected files to file1, file2, file3...
+        for (var i = 0; i < files.length; i++) {
+            var fileInput = document.getElementById("file" + (i + 1));
+            if (!fileInput) {
+                console.log("File input not found: file" + (i + 1));
+                continue;
+            }
+            var dataTransfer = new DataTransfer();
+            dataTransfer.items.add(files[i]);
+            fileInput.files = dataTransfer.files;
+        }
+        document.getElementById("uploadBtn").disabled = false;
     });
 </script>
