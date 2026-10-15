@@ -7,13 +7,9 @@ using System.Web.Mvc;
 using OfficeOpenXml;
 using System.Configuration;
 using System.Data.SqlClient;
-using DevExpress.Data.Utils;
-using DevExpress.XtraReports.UI;
-using BulkUploader.DAL;
 using BulkUploader.Models;
 using System.Diagnostics;
 using System.IO;
-using DevExpress.Security;
 using System.Text.RegularExpressions;
 using System.Globalization;
 
@@ -609,12 +605,21 @@ namespace BulkUploader.Controllers
                 var missingFiles = new List<string>();
                 string res = "";
                 string status = "";
+                int rowCount = 0;
                 foreach (var item in files)
                 {
                     var file = item.Value.File;
-
                     if (file != null && file.ContentLength > 0)
                     {
+                        using (var package = new ExcelPackage(file.InputStream))
+                        {
+                            var worksheet = package.Workbook.Worksheets[1];
+                            rowCount = worksheet.Dimension?.Rows ?? 0;
+                            // Exclude the header row
+                            rowCount = Math.Max(0, rowCount - 1);
+                        }
+                        file.InputStream.Position = 0;
+
                         SaveFiles(file);
                         res = UploadToTable(file, item.Value.Table);
                         if (res != "1")
@@ -642,18 +647,18 @@ namespace BulkUploader.Controllers
                 if (res == "1" && !missingFiles.Any() && string.IsNullOrWhiteSpace(Convert.ToString(ViewBag.Warning)))
                 {
                     status = DataStringGp.WiredrawUpdateSTP(date);
-                    //if (status == "1" || Convert.ToInt32(status) > 0)
-                    //{
-                    //    ViewBag.Success = "Uploaded Successfully!";
-                    //}
-                    //else
-                    //{
-                    //    //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
-                    //    ViewBag.Error = status;
-                    //}
-                    if (status == "1" || (int.TryParse(status, out int result) && result > 0))
+                    
+                    if (int.TryParse(status, out int result) && result > 0)
                     {
-                        ViewBag.Success = "Uploaded Successfully!";
+                        //ViewBag.Success = status + " Records Uploaded Successfully!";
+                        if (rowCount == Convert.ToInt32(status))
+                        {
+                            ViewBag.Success = "All records uploaded successfully.";
+                        }
+                        else if (rowCount != Convert.ToInt32(status))
+                        {
+                            ViewBag.Success = "Excel records: " + rowCount + ", Uploaded records: " + status;
+                        }
                     }
                     else
                     {
@@ -699,12 +704,22 @@ namespace BulkUploader.Controllers
                 var missingFiles = new List<string>();
                 string res = "";
                 string status = "";
+                int rowCount = 0;
                 foreach (var item in files)
                 {
                     var file = item.Value.File;
 
                     if (file != null && file.ContentLength > 0)
                     {
+                        using(var package = new ExcelPackage(file.InputStream))
+    {
+                            var worksheet = package.Workbook.Worksheets[1];
+                            rowCount = worksheet.Dimension?.Rows ?? 0;
+                            // Exclude the header row
+                            rowCount = Math.Max(0, rowCount - 1);
+                        }
+                        file.InputStream.Position = 0;
+
                         SaveFiles(file);
                         res = UploadToTable(file, item.Value.Table);
                         if (res != "1")
@@ -731,15 +746,31 @@ namespace BulkUploader.Controllers
                 if (res == "1" && !missingFiles.Any() && string.IsNullOrWhiteSpace(Convert.ToString(ViewBag.Warning)))
                 {
                     status = DataStringGp.WirelessRawUpdateSTP(date);
-                    if (status == "1" || Convert.ToInt32(status) > 0)
+                    if (int.TryParse(status, out int result) && result > 0)
                     {
-                        ViewBag.Success = "Uploaded Successfully!";
+                        //ViewBag.Success = status + " Records Uploaded Successfully!";
+                        if (rowCount == Convert.ToInt32(status))
+                        {
+                            ViewBag.Success = "All records uploaded successfully.";
+                        }
+                        else if (rowCount != Convert.ToInt32(status))
+                        {
+                            ViewBag.Success = "Excel records: " + rowCount + ", Uploaded records: " + status;
+                        }
                     }
                     else
                     {
-                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
                         ViewBag.Error = status;
                     }
+                    //if (status == "1" || Convert.ToInt32(status) > 0)
+                    //{
+                    //    ViewBag.Success = "Uploaded Successfully!";
+                    //}
+                    //else
+                    //{
+                    //    //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                    //    ViewBag.Error = status;
+                    //}
                 }
                 else
                 {
@@ -780,12 +811,22 @@ namespace BulkUploader.Controllers
                 var missingFiles = new List<string>();
                 string res = "";
                 string status = "";
+                int rowCount = 0;
                 foreach (var item in files)
                 {
                     var file = item.Value.File;
 
                     if (file != null && file.ContentLength > 0)
                     {
+                        using (var package = new ExcelPackage(file.InputStream))
+                        {
+                            var worksheet = package.Workbook.Worksheets[1];
+                            rowCount = worksheet.Dimension?.Rows ?? 0;
+                            // Exclude the header row
+                            rowCount = Math.Max(0, rowCount - 1);
+                        }
+                        file.InputStream.Position = 0;
+
                         SaveFiles(file);
                         res = UploadToTable(file, item.Value.Table);
                         if (res != "1")
@@ -812,13 +853,29 @@ namespace BulkUploader.Controllers
                 if (res == "1" && !missingFiles.Any() && string.IsNullOrWhiteSpace(Convert.ToString(ViewBag.Warning)))
                 {
                     status = DataStringGp.WirelessActivityUpdateSTP(date);
-                    if (status == "1" || Convert.ToInt32(status) > 0)
+                    //if (status == "1" || Convert.ToInt32(status) > 0)
+                    //{
+                    //    ViewBag.Success = "Uploaded Successfully!";
+                    //}
+                    //else
+                    //{
+                    //    //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
+                    //    ViewBag.Error = status;
+                    //}
+                    if (int.TryParse(status, out int result) && result > 0)
                     {
-                        ViewBag.Success = "Uploaded Successfully!";
+                        //ViewBag.Success = status + " Records Uploaded Successfully!";
+                        if (rowCount == Convert.ToInt32(status))
+                        {
+                            ViewBag.Success = "All records uploaded successfully.";
+                        }
+                        else if (rowCount != Convert.ToInt32(status))
+                        {
+                            ViewBag.Success = "Excel records: " + rowCount + ", Uploaded records: " + status;
+                        }
                     }
                     else
                     {
-                        //ViewBag.Warning = ViewBag.Warning + "\n" + "Not Uploaded Successfully ❌";
                         ViewBag.Error = status;
                     }
                 }

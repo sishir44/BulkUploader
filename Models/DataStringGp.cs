@@ -2,6 +2,7 @@
 using BulkUploader.Models;
 using DevExpress.Utils;
 using DevExpress.Xpo.DB.Helpers;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 using System;
 using System.Collections.Generic;
@@ -960,20 +961,31 @@ namespace BulkUploader.Models
             try
             {
                 string status = "";
-                //DateTime InputDate = DateTime.Now.Date;
-                //string formattedDate = InputDate.ToString("yyyy-MM-dd");
                 DAL.DAL objDal = new DAL.DAL();
                 objDal.ProcName = "Update_Fct_My_Wiredrawonly";
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
-                status = objDal.AddData(spParam);
-                if (status == "Operation was successful")
+                //status = objDal.AddData(spParam);
+                //if (status == "Operation was successful")
+                //{
+                //    status = "1";
+                //}
+                DataTable dt = objDal.Getdata(spParam);
+
+                if (dt != null && dt.Rows.Count > 0)
                 {
-                    status = "1";
+                    if (dt.Columns.Contains("InsertedRecords"))
+                    {
+                        status = dt.Rows[0]["InsertedRecords"].ToString();
+                    } 
+                    else if (dt.Columns.Contains("Error") && dt.Rows[0]["Error"] != DBNull.Value && !string.IsNullOrEmpty(dt.Rows[0]["Error"].ToString()))
+                    {
+                        status = dt.Rows[0]["Error"].ToString();
+                    }
                 }
                 else
                 {
-                    status = status;
+                    status = "Data not uploaded successfully";
                 }
                 return status;
             }
@@ -993,14 +1005,31 @@ namespace BulkUploader.Models
                 objDal.ProcName = "Update_Fct_My_Wirelessrawonly";
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
-                status = objDal.AddData(spParam);
-                if (status == "Operation was successful")
+                //status = objDal.AddData(spParam);
+                //if (status == "Operation was successful")
+                //{
+                //    status = "1";
+                //}
+                //else
+                //{
+                //    status = status;
+                //}
+                DataTable dt = objDal.Getdata(spParam);
+
+                if (dt != null && dt.Rows.Count > 0)
                 {
-                    status = "1";
+                    if (dt.Columns.Contains("InsertedRecords"))
+                    {
+                        status = dt.Rows[0]["InsertedRecords"].ToString();
+                    }
+                    else if (dt.Columns.Contains("Error") && dt.Rows[0]["Error"] != DBNull.Value && !string.IsNullOrEmpty(dt.Rows[0]["Error"].ToString()))
+                    {
+                        status = dt.Rows[0]["Error"].ToString(); ;
+                    }
                 }
                 else
                 {
-                    status = status;
+                    status = "Data not uploaded successfully";
                 }
                 return status;
             }
@@ -1021,16 +1050,35 @@ namespace BulkUploader.Models
                 objDal.ProcName = "Update_Fct_My_MTDWirelessactivityonly";
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
-                status = objDal.AddData(spParam);
-                if (status == "Operation was successful")
+                DataTable dt = objDal.Getdata(spParam);
+
+                if (dt != null && dt.Rows.Count > 0)
                 {
-                    status = "1";
+                    if (dt.Columns.Contains("InsertedRecords"))
+                    {
+                        status = dt.Rows[0]["InsertedRecords"].ToString();
+                    }
+                    else if (dt.Columns.Contains("Error") && dt.Rows[0]["Error"] != DBNull.Value && !string.IsNullOrEmpty(dt.Rows[0]["Error"].ToString()))
+                    {
+                        status = dt.Rows[0]["Error"].ToString(); ;
+                    }
                 }
                 else
                 {
-                    status = status;
+                    status = "Data not uploaded successfully";
                 }
                 return status;
+
+                //status = objDal.AddData(spParam);
+                //if (status == "Operation was successful")
+                //{
+                //    status = "1";
+                //}
+                //else
+                //{
+                //    status = status;
+                //}
+                //return status;
             }
             catch (Exception ex)
             {
