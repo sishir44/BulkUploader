@@ -453,10 +453,22 @@ namespace BulkUploader.Controllers
                     ViewBag.Success = "Data Uploaded to temp table: " + string.Join(", ", uploadedFiles);
                 }
 
-                if (missingFiles.Any())
-                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
+                //if (missingFiles.Any())
+                //    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", missingFiles);
 
-                if (res == "1" && !missingFiles.Any() && string.IsNullOrWhiteSpace(Convert.ToString(ViewBag.Warning)))
+                if(missingFiles.Contains("RepDataDayWise") && missingFiles.Contains("EmployeeRepData"))
+                {
+                    var executeRepDataSts = DataStringGp.ExecuteRepDataSTP();
+                }
+
+                var filesToWarn = missingFiles.Where(file => file != "RepDataDayWise" && file != "EmployeeRepData").ToList();
+                if (filesToWarn.Any())
+                {
+                    ViewBag.Warning = ViewBag.Warning + "\n" + "Not Selected Files: " + string.Join(", ", filesToWarn);
+                }
+
+
+                if (res == "1" && !filesToWarn.Any() && string.IsNullOrWhiteSpace(Convert.ToString(ViewBag.Warning)))
                 {
                     status = DataStringGp.MTDUploaderUpdateSTP(date, IsFinal);
                     if (status == "1")

@@ -927,6 +927,22 @@ namespace BulkUploader.Models
             }
         }
 
+        public static string ExecuteRepDataSTP()
+        {
+            try
+            {
+                DAL.DAL objDal = new DAL.DAL();
+                objDal.ProcName = "ForNoRapData";
+                objDal.AddData(new DAL.SPParameters());
+
+                return "1";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
         public static string DailyUploaderUpdateSTP(string date)
         {
             try
