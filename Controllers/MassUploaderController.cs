@@ -920,7 +920,7 @@ namespace BulkUploader.Controllers
             {
                 var files = new Dictionary<string, (HttpPostedFileBase File, string Table)>
                 {
-                    { "EmployeeDetailForTime", (EmployeeDetailForTime,"Temp_Daily_MTD_EmployeeDetailforTime") }
+                    { "EmployeeDetailForTime", (EmployeeDetailForTime,"Temp_Daily_MTD_EmployeeDetailforTimeNew") }
                 };
                 //var missingFiles = files.Where(f => f.Value.File == null || f.Value.File.ContentLength == 0).Select(f => f.Key).ToList();
                 var uploadedFiles = new List<string>();
