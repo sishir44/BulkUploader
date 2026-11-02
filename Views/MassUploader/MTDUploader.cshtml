@@ -4,6 +4,7 @@
 }
 
 <meta charset="utf-8" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
     body {
@@ -23,7 +24,7 @@
 
     .upload-title {
         text-align: center;
-        margin-bottom: 20px;
+        /*margin-bottom: 20px;*/
         font-weight: 500;
         color: #2d89ef;
         letter-spacing: 0.5px;
@@ -43,7 +44,7 @@
         .file-row label {
             font-size: 14px;
             font-weight: 600;
-            margin-bottom: 4px;
+            /*margin-bottom: 4px;*/
             color: #333;
         }
 
@@ -79,7 +80,7 @@
         cursor: pointer;
         transition: 0.3s;
         margin-left: 35%;
-        margin-bottom: 8px;
+        margin-bottom: 40px;
     }
 
     .success-msg {
@@ -93,7 +94,7 @@
         text-align: center;
         font-size: 13px;
         color: #666;
-        margin-bottom: 12px;
+        /*margin-bottom: 12px;*/
     }
 
     .upload-btn:disabled {
@@ -140,7 +141,7 @@
     .upload-header {
         position: relative;
         text-align: center;
-        margin-bottom: 12px;
+        /*margin-bottom: 12px;*/
     }
 
     /* ----- DATE BOX ----- */
@@ -220,6 +221,35 @@
     }
 </style>
 
+<style>
+    .select-all-btn {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: bold;
+        margin-left: 90%;
+        border: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        background: #A4E1F5;
+        color: black;
+    }
+
+        .select-all-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .select-all-btn:active {
+            transform: scale(0.95);
+        }
+</style>
+
 
 
 <div class="upload-wrapper">
@@ -250,108 +280,118 @@
             Only <strong>.xls</strong> and <strong>.xlsx</strong> files are allowed
         </div>
 
+        <div>
+            <button type="button" id="btnSelectAll" class="btn btn-success select-all-btn" title="Select All Excel Files">
+                All Files
+                <i class="fa fa-file-excel-o"></i>
+            </button>
+            <input type="file" id="allExcelFiles" multiple accept=".xls,.xlsx" style="display:none;">
+        </div>
+
+
+
 
 
         <div class="file-grid">
 
             <div class="file-row">
                 <label>KPI National</label>
-                <input type="file" name="KPINational" accept=".xls,.xlsx" />
+                <input type="file" name="KPINational"  id="file1" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>KPI National 1</label>
-                <input type="file" name="KPINational1" accept=".xls,.xlsx" />
+                <input type="file" name="KPINational1" id="file2" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>MIS Location</label>
-                <input type="file" name="MISLocation" accept=".xls,.xlsx" />
+                <input type="file" name="MISLocation" id="file3" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>KPI Location 1</label>
-                <input type="file" name="KPILocation1" accept=".xls,.xlsx" />
+                <input type="file" name="KPILocation1" id="file4" accept=".xls,.xlsx" />
             </div>
 
             @*<div class="file-row">
-            <label>MIS National</label>
-            <input type="file" name="MISNational" accept=".xls,.xlsx" />
-        </div>*@
+                    <label>MIS National</label>
+                    <input type="file" name="MISNational" accept=".xls,.xlsx" />
+                </div>*@
 
             <div class="file-row">
                 <label>MTD National 1</label>
-                <input type="file" name="MTDNational1" accept=".xls,.xlsx" />
+                <input type="file" name="MTDNational1" id="file5" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>MTD National 2</label>
-                <input type="file" name="MTDNational2" accept=".xls,.xlsx" />
+                <input type="file" name="MTDNational2" id="file6" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>MTD Location 3</label>
-                <input type="file" name="MTDLocation3" accept=".xls,.xlsx" />
+                <input type="file" name="MTDLocation3" id="file7" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>MTD Location 4</label>
-                <input type="file" name="MTDLocation4" accept=".xls,.xlsx" />
+                <input type="file" name="MTDLocation4" id="file8" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>MTD Location 5</label>
-                <input type="file" name="MTDLocation5" accept=".xls,.xlsx" />
+                <input type="file" name="MTDLocation5" id="file9" accept=".xls,.xlsx" />
             </div>
 
             @*<div class="file-row">
-            <label>Leads Called </label>
-            <input type="file" name="LeadsCalled" accept=".xls,.xlsx" />
-        </div>*@
+                    <label>Leads Called </label>
+                    <input type="file" name="LeadsCalled" accept=".xls,.xlsx" />
+                </div>*@
 
             <div class="file-row">
                 <label>Employee Rep Data</label>
-                <input type="file" name="EmployeeRepData" accept=".xls,.xlsx" />
+                <input type="file" name="EmployeeRepData" id="file10" accept=".xls,.xlsx" />
             </div>
 
             @*<div class="file-row">
-            <label>Marketing </label>
-            <input type="file" name="Marketing" accept=".xls,.xlsx" />
-        </div>*@
+                    <label>Marketing </label>
+                    <input type="file" name="Marketing" accept=".xls,.xlsx" />
+                </div>*@
 
             @*<div class="file-row">
-            <label>Requisitions Table</label>
-            <input type="file" name="RequisitionsTable" accept=".xls,.xlsx" />
-        </div>*@
+                    <label>Requisitions Table</label>
+                    <input type="file" name="RequisitionsTable" accept=".xls,.xlsx" />
+                </div>*@
 
             @*<div class="file-row">
-            <label>Wiredraw </label>
-            <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
-        </div>
+                    <label>Wiredraw </label>
+                    <input type="file" name="Wiredraw" accept=".xls,.xlsx" />
+                </div>
 
-        <div class="file-row">
-            <label>Wirelessraw </label>
-            <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
-        </div>*@
+                <div class="file-row">
+                    <label>Wirelessraw </label>
+                    <input type="file" name="Wirelessraw" accept=".xls,.xlsx" />
+                </div>*@
 
             <div class="file-row">
                 <label>Employee Detail for Time</label>
-                <input type="file" name="EmployeeDetailforTime" accept=".xls,.xlsx" />
+                <input type="file" name="EmployeeDetailforTime" id="file11" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>ATTUID Details MIS</label>
-                <input type="file" name="ATTUIDDetailsMIS" accept=".xls,.xlsx" />
+                <input type="file" name="ATTUIDDetailsMIS" id="file12" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>TA Total Hours Summary</label>
-                <input type="file" name="TATotalHoursSummary" accept=".xls,.xlsx" />
+                <input type="file" name="TATotalHoursSummary" id="file13" accept=".xls,.xlsx" />
             </div>
 
             <div class="file-row">
                 <label>Rep Data Day Wise</label>
-                <input type="file" name="RepDataDayWise" accept=".xls,.xlsx" />
+                <input type="file" name="RepDataDayWise" id="file14" accept=".xls,.xlsx" />
             </div>
 
         </div>
@@ -486,3 +526,35 @@
         }
     });
 </script>*@
+
+<script>
+
+    $("#btnSelectAll").click(function () {
+        $("#allExcelFiles").click();
+    });
+
+    // When files are selected
+    $("#allExcelFiles").change(function () {
+        var files = this.files;
+
+        // Check number of files
+        if (files.length > 23) {
+            alert("Please select all files.");
+            this.value = "";
+            return;
+        }
+
+        // Bind selected files to file1, file2, file3...
+        for (var i = 0; i < files.length; i++) {
+            var fileInput = document.getElementById("file" + (i + 1));
+            if (!fileInput) {
+                console.log("File input not found: file" + (i + 1));
+                continue;
+            }
+            var dataTransfer = new DataTransfer();
+            dataTransfer.items.add(files[i]);
+            fileInput.files = dataTransfer.files;
+        }
+        document.getElementById("uploadBtn").disabled = false;
+    });
+</script>
