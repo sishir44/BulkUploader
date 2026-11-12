@@ -398,6 +398,83 @@ namespace BulkUploader.DAL
 
         }
 
+        public string AddDataDaily(SPParameters spparam)
+        {
+            string strMessage = "";
+
+            try
+            {
+                cmd.CommandText = sProcName;
+                cmd.CommandTimeout = 0;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = cn;
+
+                cmd.Parameters.Clear();
+
+                int i = 0;
+
+                IEnumerator myEnumerator = spparam.GetParams().GetEnumerator();
+
+                while (myEnumerator.MoveNext())
+                {
+                    ParamData pData = (ParamData)myEnumerator.Current;
+
+                    cmd.Parameters.Add(pData.pName, pData.pDataType);
+
+                    if (pData.DTpValue != null)
+                        cmd.Parameters[i].Value = pData.DTpValue;
+
+                    if (pData.pValue != null)
+                        cmd.Parameters[i].Value = pData.pValue;
+                    else if (pData.pic != null)
+                        cmd.Parameters[i].Value = pData.pic;
+
+                    i++;
+                }
+
+                // Open connection before executing
+                if (cn.State != ConnectionState.Open)
+                    cn.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        if (reader.FieldCount == 1)
+                        {
+                            strMessage = Convert.ToInt32(reader[0]) == 1
+                                ? "Operation was successful"
+                                : "No Record Updated";
+                        }
+                        else
+                        {
+                            strMessage = reader["Message"].ToString();
+
+                            int oldCount = Convert.ToInt32(reader["OldDataCount"]);
+                            int newCount = Convert.ToInt32(reader["NewDataCount"]);
+                        }
+                    }
+                    else
+                    {
+                        strMessage = "No Record Updated";
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                strMessage = "Error has occurred: " + ex.Message;
+            }
+            finally
+            {
+                cmd.Parameters.Clear();
+
+                if (cn.State != ConnectionState.Closed)
+                    cn.Close();
+            }
+
+            return strMessage;
+        }
+
         public string AddDataChargeBack(SPParameters spparam)
         {
             try

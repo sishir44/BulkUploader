@@ -910,8 +910,8 @@ namespace BulkUploader.Models
                 DAL.SPParameters spParam = new DAL.SPParameters();
                 spParam.SetParam("@InputDate", SqlDbType.VarChar, date);
                 spParam.SetParam("@IsFinal", SqlDbType.VarChar, IsFinal);
-                status = objDal.AddData(spParam);
-                if (status == "Operation was successful" || Convert.ToInt32(status) > 1)
+                status = objDal.AddDataDaily(spParam);
+                if (status == "Operation was successful")// || Convert.ToInt32(status) > 1)
                 {
                     status = "1";
                 }
