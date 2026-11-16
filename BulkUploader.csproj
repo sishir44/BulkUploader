@@ -364,6 +364,7 @@
     <Content Include="Views\MassUploader\QuantumUploader.cshtml" />
     <Content Include="Views\MassUploader\RetailUploader.cshtml" />
     <Content Include="Views\MassUploader\EdftUploader.cshtml" />
+    <Content Include="Views\MassUploader\ExpectedCommissionUploader.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\" />
